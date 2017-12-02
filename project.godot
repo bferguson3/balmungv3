@@ -1,0 +1,33 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=3
+
+[application]
+
+config/name="Balmung v3"
+run/main_scene="res://scenes/testscene-tiled.scn"
+icon="res://icon.png"
+main_scene="res://scenes/testscene-tiled.scn"
+name="Balmungv2"
+
+[autoload]
+
+globals="*res://scripts/globals.cs"
+
+[editor_plugins]
+
+enabled=[ "vnen.tiled_importer" ]
+
+[gdnative]
+
+singletons=[  ]
+
+[physics_2d]
+
+motion_fix_enabled=true
