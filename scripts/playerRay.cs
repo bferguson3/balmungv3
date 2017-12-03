@@ -4,10 +4,26 @@ using System;
 public class playerRay : RayCast2D
 {
     globals g;
+    player p;
+    Sprite ui;
+    Camera2D cam;
 
     public override void _Ready()
     {
         g = GetNode("/root/globals") as globals;
+        ui = GetNode("../../combatUI") as Sprite;
+        cam = GetNode("../Camera2D") as Camera2D;
+        p = GetParent() as player;
+
+    }
+
+    private void SetBattlePositions(battlePositions bpos, player p, npcScript n)
+    {
+        if(bpos == battlePositions.standard)
+        {
+            p.SetPosition(n.GetPosition() + new Vector2(0, 98));
+            n.SetPosition(n.GetPosition() + new Vector2(0, -98));
+        }
     }
 
     private void CheckCombat(Node col)
@@ -16,15 +32,14 @@ public class playerRay : RayCast2D
         if(n.myType == npcType.enemy){
             
             g.inCombat = true;
-
-            Sprite ui = GetNode("../../combatUI") as Sprite;
             
-            Camera2D cam = GetNode("../Camera2D") as Camera2D;
-            Vector2 oldpos = cam.GetGlobalPosition();
-            oldpos.x -= 130;
             ui.Show();
-            ui.SetPosition(oldpos);
-            cam.SetOffset(new Vector2(-80, 0));
+            ui.SetPosition(n.GetPosition() + new Vector2(120, 40));
+            
+            cam.SetOffset(new Vector2(200, 40));
+            
+            SetBattlePositions(battlePositions.standard, p, n);
+           
             cam.SetDragMargin(0, 1);
             cam.SetDragMargin(1, 1);
             cam.SetDragMargin(2, 1);
