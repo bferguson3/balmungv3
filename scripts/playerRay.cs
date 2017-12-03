@@ -14,7 +14,22 @@ public class playerRay : RayCast2D
     {
         npcScript n = col.GetParent() as npcScript;
         if(n.myType == npcType.enemy){
-            //GD.Print("BATTLE!");
+            
+            g.inCombat = true;
+
+            Sprite ui = GetNode("../../combatUI") as Sprite;
+            
+            Camera2D cam = GetNode("../Camera2D") as Camera2D;
+            Vector2 oldpos = cam.GetGlobalPosition();
+            oldpos.x -= 130;
+            ui.Show();
+            ui.SetPosition(oldpos);
+            cam.SetOffset(new Vector2(-80, 0));
+            cam.SetDragMargin(0, 1);
+            cam.SetDragMargin(1, 1);
+            cam.SetDragMargin(2, 1);
+            cam.SetDragMargin(3, 1);
+        
         }
     }
 
@@ -24,7 +39,8 @@ public class playerRay : RayCast2D
         {
             if (IsColliding())
             {
-                CheckCombat(GetCollider() as Node);
+                if(!g.inCombat)
+                    CheckCombat(GetCollider() as Node);
                 g.playerBlockedDown = true;
             }
             else
@@ -33,7 +49,8 @@ public class playerRay : RayCast2D
         else if (GetName() == "playerRayUp")
         {
             if (IsColliding()){
-                CheckCombat(GetCollider() as Node);
+                if(!g.inCombat)
+                    CheckCombat(GetCollider() as Node);
                 g.playerBlockedUp = true;
             }
             else
@@ -42,7 +59,8 @@ public class playerRay : RayCast2D
         else if (GetName() == "playerRayLeft")
         {
             if (IsColliding()){
-                CheckCombat(GetCollider() as Node);
+                if(!g.inCombat)
+                    CheckCombat(GetCollider() as Node);
                 g.playerBlockedLeft = true;
             }
             else
@@ -52,7 +70,8 @@ public class playerRay : RayCast2D
         else if(GetName() == "playerRayRight")
         {
             if (IsColliding()){
-                CheckCombat(GetCollider() as Node);
+                if(!g.inCombat)
+                    CheckCombat(GetCollider() as Node);
                 g.playerBlockedRight = true;
             }
             else 

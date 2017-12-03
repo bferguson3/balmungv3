@@ -13,6 +13,8 @@ public class globals : Node
 
     public bool playerBlockedDown, playerBlockedUp, playerBlockedLeft, playerBlockedRight;
 
+    public bool inCombat;
+
     public override void _Ready()
     {
         upButton = "ui_up";

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016 George Marques
+# Copyright (c) 2017 George Marques
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,12 +41,12 @@ func init(p_source, p_options):
 	source = p_source
 	options = p_options
 
-	options.name = source.basename()
+	options.name = source.get_basename()
 	options.basedir = source.get_base_dir()
 
 func get_data():
 
-	if source.extension() == "json":
+	if source.get_extension() == "json":
 		var f = File.new()
 		if f.open(source, File.READ) != OK:
 			return "Couldn't open source file"
@@ -54,7 +54,8 @@ func get_data():
 		var tiled_raw_data = f.get_as_text()
 		f.close()
 
-		if data.parse_json(tiled_raw_data) != OK:
+		data = parse_json(tiled_raw_data)
+		if typeof(data) != TYPE_DICTIONARY:
 			return "Couldn't parse the source file"
 	else:
 		data = _tmx_to_dict(source)
@@ -75,7 +76,7 @@ func build():
 	if not data.has("tileheight") or not data.has("tilewidth"):
 		return 'Invalid Tiled data: missing "tileheight" or "tilewidth" keys.'
 
-	var basename = options.target.substr(options.target.find_last('/'), options.target.length()).basename()
+	var basename = options.target.substr(options.target.find_last('/'), options.target.length()).get_basename()
 
 	var map_size = Vector2(int(data.width), int(data.height))
 	var cell_size = Vector2(int(data.tilewidth), int(data.tileheight))
@@ -95,15 +96,14 @@ func build():
 		if tstemp.has("source"):
 			var err = OK
 			var tileset_src = source.get_base_dir().plus_file(tstemp.source) if tstemp.source.is_rel_path() else tstemp.source
-			if tileset_src.extension() == "json":
+			if tileset_src.get_extension() == "json":
 				var f = File.new()
 				err = f.open(tileset_src, File.READ)
 				if err != OK:
 					return "Couldn't open tileset file %s." % [tileset_src]
 
-				ts = {}
-				err = ts.parse_json(f.get_as_text())
-				if err != OK:
+				ts = parse_json(f.get_as_text())
+				if typeof(ts) != TYPE_DICTIONARY:
 					return "Couldn't parse tileset file %s." % [tileset_src]
 			else:
 				var tsparser = XMLParser.new()
@@ -188,20 +188,21 @@ func build():
 			var tilepos = Vector2(x,y)
 			var region = Rect2(tilepos, tilesize)
 
-			var rel_id = str(gid - firstgid)
-
 			tileset.create_tile(gid)
 			if has_global_img:
 				tileset.tile_set_texture(gid, image)
 				tileset.tile_set_region(gid, region)
-			elif not rel_id in ts.tiles:
+
+			var rel_id = str(gid - firstgid)
+
+			if not rel_id in ts.tiles:
 				gid += 1
 				continue
 
 			if not has_global_img and "image" in ts.tiles[rel_id]:
 				var _img = ts.tiles[rel_id].image
 				image_path = options.basedir.plus_file(_img) if _img.is_rel_path() else _img
-				_img = _img.get_file().basename()
+				_img = _img.get_file().get_basename()
 				image = _load_image(image_path, target_dir, "%s_%s_%s.png" % [name, _img, rel_id], cell_size.x, cell_size.y)
 				if typeof(image) == TYPE_STRING:
 					return image
@@ -271,11 +272,10 @@ func build():
 	# TileSets done, creating the target scene
 
 	scene = Node2D.new()
-	scene.set_name(basename)
+	scene.set_name(basename.substr(0,4));
 
-	for l in data.layers:
-		if l.has("compression"):
-			return 'Tiled compressed format is not supported. Change your Map properties to a format without compression.'
+	for layer in data.layers:
+		var l = layer
 
 		if not l.has("type"):
 			return 'Invalid Tiled data: missing "type" key on layer.'
@@ -301,20 +301,27 @@ func build():
 			if "encoding" in l:
 				if l.encoding != "base64":
 					return 'Unsupported layer data encoding. Use Base64 or no enconding.'
-				layer_data = _parse_base64_layer(l.data)
+				else:
+					if l.has("compression"):
+						var layer_size = int(l.width) * int(l.height) * 4
+						layer_data = _parse_encoded_layer(l.data, l.compression, layer_size)
+					else:
+						layer_data = _parse_encoded_layer(l.data)
+					if typeof(layer_data) == TYPE_STRING:
+						return layer_data
 
 			var tilemap = TileMap.new()
 			tilemap.set_name(name)
-			tilemap.set_cell_size(cell_size)
-			tilemap.set_opacity(opacity)
-			tilemap.set_hidden(not visible)
-			tilemap.set_mode(map_mode)
+			tilemap.cell_size = cell_size
+			tilemap.modulate = Color(1, 1, 1, opacity)
+			tilemap.visible = visible
+			tilemap.mode = map_mode
 
 			var offset = Vector2()
 			if l.has("offsetx") and l.has("offsety"):
 				offset = Vector2(int(l.offsetx), int(l.offsety))
 
-			tilemap.set_pos(offset)
+			tilemap.position = offset
 
 			var firstgid = 0
 			tilemap.set_tileset(_tileset_from_gid(firstgid))
@@ -338,7 +345,7 @@ func build():
 					firstgid = gid
 					tilemap.set_tileset(_tileset_from_gid(firstgid))
 
-				var cell_pos = Vector2(count % int(map_size.width), int(count / map_size.width))
+				var cell_pos = Vector2(count % int(map_size.x), int(count / map_size.x))
 				tilemap.set_cellv(cell_pos, gid, flipped_h, flipped_v, flipped_d)
 
 				count += 1
@@ -375,11 +382,11 @@ func build():
 			if typeof(image) == TYPE_STRING:
 				return image
 
-			sprite.set_texture(image)
-			sprite.set_opacity(opacity)
-			sprite.set_hidden(not visible)
+			sprite.texture = image
+			sprite.modulate = Color(1, 1, 1, opacity)
+			sprite.visible = visible
 			scene.add_child(sprite)
-			sprite.set_pos(pos + offset)
+			sprite.position = pos + offset
 			sprite.set_owner(scene)
 
 		elif l.type == "objectgroup":
@@ -454,18 +461,18 @@ func build():
 						if not ("polygon" in obj or "polyline" in obj):
 							collision = CollisionShape2D.new()
 							collision.set_shape(shape)
-							if shape extends RectangleShape2D:
+							if shape is RectangleShape2D:
 								offset = shape.get_extents()
-							elif shape extends CircleShape2D:
+							elif shape is CircleShape2D:
 								offset = Vector2(shape.get_radius(), shape.get_radius())
-							elif shape extends CapsuleShape2D:
+							elif shape is CapsuleShape2D:
 								offset = Vector2(shape.get_radius(), shape.get_height())
 							collision.set_pos(-offset)
 							rot_offset = 180
 						else:
 							collision = CollisionPolygon2D.new()
 							var points = null
-							if shape extends ConcavePolygonShape2D:
+							if shape is ConcavePolygonShape2D:
 								points = []
 								var segments = shape.get_segments()
 								for i in range(0, segments.size()):
@@ -719,10 +726,19 @@ class PointSorter:
 
 		return d1 < d2
 
-func _parse_base64_layer(data):
+func _parse_encoded_layer(data, compression = "", buffer_size = 0):
 	var decoded = Marshalls.base64_to_raw(data)
-
 	var result = []
+
+	if compression != "":
+		var compression_mode
+		match compression:
+			"zlib": compression_mode = File.COMPRESSION_DEFLATE
+			_: return "Unsupported compression type: " + compression
+
+		decoded = decoded.decompress(buffer_size, compression_mode)
+		if decoded.size() == 0:
+			return "Error decompressing the data"
 
 	for i in range(0, decoded.size(), 4):
 
@@ -810,15 +826,14 @@ func _tmx_to_dict(path):
 					var tileset_data = _attributes_to_dict(parser)
 					var tileset_src = path.get_base_dir().plus_file(tileset_data.source) if tileset_data.source.is_rel_path() else tileset_data.source
 
-					if tileset_src.extension() == "json":
+					if tileset_src.get_extension() == "json":
 						var f = File.new()
 						err = f.open(tileset_src, File.READ)
 						if err != OK:
 							return "Couldn't open tileset file %s." % [tileset_src]
 
-						var ts = {}
-						err = ts.parse_json(f.get_as_text())
-						if err != OK:
+						var ts = parse_json(f.get_as_text())
+						if typeof(ts) != TYPE_DICTIONARY:
 							return "Couldn't parse tileset file %s." % [tileset_src]
 
 						ts.firstgid = int(tileset_data.firstgid)
