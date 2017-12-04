@@ -55,6 +55,7 @@
     <Compile Include="scripts\npcScript.cs" />
     <Compile Include="scripts\player.cs" />
     <Compile Include="scripts\playerRay.cs" />
+    <Compile Include="scripts\UI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="scenes\" />

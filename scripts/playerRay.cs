@@ -5,13 +5,15 @@ public class playerRay : RayCast2D
 {
     globals g;
     player p;
-    Sprite ui;
+    UI ui;
     Camera2D cam;
+
+    bool drawingFadeOut;
 
     public override void _Ready()
     {
         g = GetNode("/root/globals") as globals;
-        ui = GetNode("../../combatUI") as Sprite;
+        ui = GetNode("../../UI") as UI;
         cam = GetNode("../Camera2D") as Camera2D;
         p = GetParent() as player;
 
@@ -25,14 +27,16 @@ public class playerRay : RayCast2D
             n.SetPosition(n.GetPosition() + new Vector2(0, -98));
         }
     }
-
+    
     private void CheckCombat(Node col)
     {
         npcScript n = col.GetParent() as npcScript;
         if(n.myType == npcType.enemy){
             
             g.inCombat = true;
-            
+
+            ui.StartFadeOut();
+
             ui.Show();
             ui.SetPosition(n.GetPosition() + new Vector2(120, 40));
             
