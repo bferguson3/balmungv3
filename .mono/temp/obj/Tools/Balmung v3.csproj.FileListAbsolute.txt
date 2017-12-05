@@ -1,6 +1,0 @@
-/Users/bferguson/Projects/balmungv3/.mono/temp/obj/Tools/Balmung v3.csprojResolveAssemblyReference.cache
-/Users/bferguson/Projects/balmungv3/.mono/temp/obj/Tools/Balmung v3.csproj.CoreCompileInputs.cache
-/Users/bferguson/Projects/balmungv3/.mono/temp/bin/Tools/Balmung v3.dll
-/Users/bferguson/Projects/balmungv3/.mono/temp/bin/Tools/Balmung v3.pdb
-/Users/bferguson/Projects/balmungv3/.mono/temp/obj/Tools/Balmung v3.dll
-/Users/bferguson/Projects/balmungv3/.mono/temp/obj/Tools/Balmung v3.pdb
