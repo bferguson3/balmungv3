@@ -7,7 +7,7 @@ public class playerRay : RayCast2D
     player p;
     UI ui;
     Camera2D cam;
-
+    npcScript collidingWith;
     bool drawingFadeOut;
 
     public override void _Ready()
@@ -18,37 +18,16 @@ public class playerRay : RayCast2D
         p = GetParent() as player;
 
     }
-
-    private void SetBattlePositions(battlePositions bpos, player p, npcScript n)
-    {
-        if(bpos == battlePositions.standard)
-        {
-            p.SetPosition(n.GetPosition() + new Vector2(0, 98));
-            n.SetPosition(n.GetPosition() + new Vector2(0, -98));
-        }
-    }
     
     private void CheckCombat(Node col)
     {
-        npcScript n = col.GetParent() as npcScript;
-        if(n.myType == npcType.enemy){
+        collidingWith = col.GetParent() as npcScript;
+        ui.collidingWith = collidingWith;
+        if(ui.collidingWith.myType == npcType.enemy){
             
             g.inCombat = true;
 
             ui.StartFadeOut();
-
-            ui.Show();
-            ui.SetPosition(n.GetPosition() + new Vector2(120, 40));
-            
-            cam.SetOffset(new Vector2(200, 40));
-            
-            SetBattlePositions(battlePositions.standard, p, n);
-           
-            cam.SetDragMargin(0, 1);
-            cam.SetDragMargin(1, 1);
-            cam.SetDragMargin(2, 1);
-            cam.SetDragMargin(3, 1);
-        
         }
     }
 
