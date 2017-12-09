@@ -3,27 +3,28 @@ using System;
 
 public class UI : Sprite
 {
-    bool drawTest;
+    bool combatTransitionStart;
     Rect2 frame, blackSquare;
     Camera2D cam;
     Timer fadeTicker;
     int fadeLoop = 0;
     int rectSize = 92;
     bool[,] fadeRects = new bool[20,20];
-    Vector2 upLeft;
+    Vector2 upLeft, bsqPos;
     public npcScript collidingWith;
     player p;
     globals g;
+    Sprite combatUI;
 
     public override void _Draw(){
-       if(drawTest){
+       if(combatTransitionStart){
            for(int j = 0; j < fadeLoop; j++){
                for(int k = 0; k < fadeLoop; k++){
                    if(fadeRects[j, k] == true){
-                       Vector2 placement = upLeft;
-                       placement.x += j * rectSize;
-                       placement.y += k * rectSize;
-                       DrawRect(new Rect2(placement, new Vector2(rectSize, rectSize)), new Color(0,0,0,1));
+                       bsqPos = upLeft;
+                       bsqPos.x += j * rectSize;
+                       bsqPos.y += k * rectSize;
+                       DrawRect(new Rect2(bsqPos, new Vector2(rectSize, rectSize)), new Color(0,0,0,1));
                    }
                }
            }
@@ -41,21 +42,28 @@ public class UI : Sprite
 
         blackSquare = new Rect2(upLeft, new Vector2(128, 128));
         
-        drawTest = true;
+        combatTransitionStart = true;
 
         fadeTicker = new Timer();
         this.AddChild(fadeTicker);
-        fadeTicker.Connect("timeout", this, "TickHit");
+        fadeTicker.Connect("timeout", this, "FadeTick");
         fadeTicker.SetWaitTime(0.075f);
         fadeTicker.Start();
 
+        SetPosition(p.GetPosition() + new Vector2(-64, 0));
         Show();
-        SetPosition(collidingWith.GetPosition() + new Vector2(120, 40));
-        
-    }
     
+    }
 
-    public void TickHit(){
+    public void StartFadeIn()
+    {
+        SetPosition(collidingWith.GetPosition() + new Vector2(120, 40));
+        cam.SetOffset(new Vector2(200, 40));
+        SetupCombat();
+    }
+
+    public void FadeTick()
+    {
         for(int n = 0; n < fadeLoop; n++){
                 for(int c = fadeLoop; c >= 0; c--){
                     if(n+c <= fadeLoop)
@@ -66,29 +74,29 @@ public class UI : Sprite
         Update();
         if(fadeLoop > 19){
             fadeLoop = 0;
-            drawTest = false;
+            combatTransitionStart = false;
             fadeTicker.Stop();
-            SetupCombat();
+            //SetupCombat();
+            StartFadeIn();
         }
     }
+
     public void SetupCombat()
     {
-            cam.SetOffset(new Vector2(200, 40));
-            cam.SetDragMargin(0, 1);
-            cam.SetDragMargin(1, 1);
-            cam.SetDragMargin(2, 1);
-            cam.SetDragMargin(3, 1);
+            for(int v = 0; v < 4; v++)
+                cam.SetDragMargin(v, 1);
             
             SetBattlePositions(battlePositions.standard, p, collidingWith);
            
-            Sprite n = GetNode("combatUI") as Sprite;
-            n.Show();
+            combatUI.Show();
     }
 
     private void SetBattlePositions(battlePositions bpos, player pl, npcScript np)
     {
         if(bpos == battlePositions.standard)
         {
+            //TODO
+            //Properly position player and enemies. Atm splits +3/-3 squares.
             pl.SetPosition(np.GetPosition() + new Vector2(0, 98));
             np.SetPosition(np.GetPosition() + new Vector2(0, -98));
         }
@@ -98,6 +106,7 @@ public class UI : Sprite
         cam = GetNode("../playerSprite/Camera2D") as Camera2D;    
         p = GetNode("../playerSprite") as player;
         g = GetNode("/root/globals") as globals;
+        combatUI = GetNode("combatUI") as Sprite;
     }
 
    public override void _Process(float delta)
