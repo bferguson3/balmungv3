@@ -48,9 +48,10 @@ public class UI : Sprite
         fadeTicker.Connect("timeout", this, "TickHit");
         fadeTicker.SetWaitTime(0.075f);
         fadeTicker.Start();
+
         Show();
         SetPosition(collidingWith.GetPosition() + new Vector2(120, 40));
-        cam.SetOffset(new Vector2(200, 40));
+        
     }
     
 
@@ -70,17 +71,18 @@ public class UI : Sprite
             SetupCombat();
         }
     }
-    public void SetupCombat(){
-            
-            
-            
-            
-            SetBattlePositions(battlePositions.standard, p, collidingWith);
-           
+    public void SetupCombat()
+    {
+            cam.SetOffset(new Vector2(200, 40));
             cam.SetDragMargin(0, 1);
             cam.SetDragMargin(1, 1);
             cam.SetDragMargin(2, 1);
             cam.SetDragMargin(3, 1);
+            
+            SetBattlePositions(battlePositions.standard, p, collidingWith);
+           
+            Sprite n = GetNode("combatUI") as Sprite;
+            n.Show();
     }
 
     private void SetBattlePositions(battlePositions bpos, player pl, npcScript np)
