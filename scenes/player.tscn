@@ -6,11 +6,21 @@
 
 [node name="playerSprite" type="Sprite"]
 
+position = Vector2( 333.786, 303.927 )
 texture = ExtResource( 1 )
 vframes = 60
 hframes = 32
 frame = 585
 script = ExtResource( 2 )
+myName = "Roddick"
+STR = 20
+DEX = 10
+INT = 10
+EXP = 0
+MaxHP = 100
+HP = 100
+MaxMP = 5
+MP = 5
 
 [node name="playerRayDown" type="RayCast2D" parent="."]
 

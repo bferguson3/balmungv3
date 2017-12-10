@@ -50,9 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="scenes\npcTemplate.cs" />
+    <Compile Include="scripts\combatOps.cs" />
     <Compile Include="scripts\globals.cs" />
     <Compile Include="scripts\inputManager.cs" />
-    <Compile Include="scripts\npcScript.cs" />
+    <Compile Include="scripts\npc.cs" />
     <Compile Include="scripts\player.cs" />
     <Compile Include="scripts\playerRay.cs" />
     <Compile Include="scripts\UI.cs" />

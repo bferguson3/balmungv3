@@ -7,7 +7,7 @@ public class playerRay : RayCast2D
     player p;
     UI ui;
     Camera2D cam;
-    npcScript collidingWith;
+    npc collidingWith;
     bool drawingFadeOut;
 
     public override void _Ready()
@@ -21,12 +21,15 @@ public class playerRay : RayCast2D
     
     private void CheckCombat(Node col)
     {
-        collidingWith = col.GetParent() as npcScript;
+        collidingWith = col.GetParent() as npc;
+        if(collidingWith == null)
+            return;
+        
         ui.collidingWith = collidingWith;
         if(ui.collidingWith.myType == npcType.enemy){
-            
+            //TODO: Move elsewhere?
             g.inCombat = true;
-
+            g.inputMode = inputModes.noInput;
             ui.StartFadeOut();
         }
     }

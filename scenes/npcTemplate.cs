@@ -1,18 +1,16 @@
 using Godot;
 using System;
 
-public enum npcType { enemy, shopKeep, talker }
-
-public class npcScript : Sprite
+public class npcTemplate : Sprite
 {
-    [Export]
-    public npcType myType;
-	[Export]
-	int x = 0;
+    // Member variables here, example:
+    // private int a = 2;
+    // private string b = "textvar";
 
     public override void _Ready()
     {
-        //register_property("hp", &npcScript::myType, 100);
+        // Called every time the node is added to the scene.
+        // Initialization here
         
     }
 

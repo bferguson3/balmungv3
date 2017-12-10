@@ -5,6 +5,30 @@ public class player : Sprite
 { 
     Vector2 mypos;
     globals g;
+	
+    [Export]
+    public string myName;
+    [Export]
+    public int ATK;
+    [Export]
+    public int DEF;
+    [Export]
+    public int STR;
+    [Export]
+    public int DEX;
+    [Export]
+    public int INT;
+    [Export]
+    public int EXP;
+    [Export]
+    public int MaxHP;
+    [Export]
+    public int HP;
+    [Export]
+    public int MaxMP;
+    [Export]
+    public int MP;
+    public int initiative;
 
     public override void _Ready()
     {

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://angband32.tex" type="Texture" id=1]
-[ext_resource path="res://scripts/npcScript.cs" type="Script" id=2]
+[ext_resource path="res://scripts/npc.cs" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -15,8 +15,6 @@ vframes = 60
 hframes = 32
 frame = 608
 script = ExtResource( 2 )
-myType = 0
-x = 0
 
 [node name="Area2D" type="Area2D" parent="."]
 
