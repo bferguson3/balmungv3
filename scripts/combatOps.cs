@@ -6,6 +6,8 @@ public class combatOps : Node
     public Timer combatWaitTimer;
     UI gui;
     player p;
+    globals g;
+    groundFX ground;
     public void SetBattlePositions(battlePositions bpos, player pl, npc np)
     {
         if(bpos == battlePositions.standard)
@@ -29,13 +31,21 @@ public class combatOps : Node
     public void BeginNextTurn(){
         //Iterate through combatants
         //Determine initiative via DEX
-        gui.UpdateCombatFeedback("ITS YOUR TURN");
+        //TODO: Fix this mess
+        gui.UpdateCombatFeedback("Player(0)'s turn. Move? OK.\nSelect move position.");
+        p.InitializeTurn();
+        ground.DrawPlayerMoveZone();
+        g.inputMode = inputModes.combatMove;
+        
+
     }
     public override void _Ready()
     {   
-        
         gui = GetNode("../UI") as UI;
         p = GetNode("../playerSprite") as player;
+        ground = GetNode("../groundFX") as groundFX;
+        g = GetNode("/root/globals") as globals;
+
         combatWaitTimer = new Timer();
         this.AddChild(combatWaitTimer);
     }

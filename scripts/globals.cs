@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public enum inputModes { noInput, moving }
+public enum inputModes { noInput, moving, combatMove }
 public enum battlePositions { standard, reversed, rtl, ltr, hasami, ambushed }
 
 public class globals : Node

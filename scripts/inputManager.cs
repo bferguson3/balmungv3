@@ -29,6 +29,11 @@ public class inputManager : Node
                 p.MoveThisSprite(key);
             }
         }
+        else if(g.inputMode == inputModes.combatMove){
+            if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
+                p.MoveThisSprite(key);
+            }
+        }
     }
 
     void FirstDepress(string key)

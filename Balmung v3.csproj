@@ -53,6 +53,7 @@
     <Compile Include="scenes\npcTemplate.cs" />
     <Compile Include="scripts\combatOps.cs" />
     <Compile Include="scripts\globals.cs" />
+    <Compile Include="scripts\groundFX.cs" />
     <Compile Include="scripts\inputManager.cs" />
     <Compile Include="scripts\npc.cs" />
     <Compile Include="scripts\player.cs" />

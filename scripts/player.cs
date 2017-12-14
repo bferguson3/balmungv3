@@ -4,7 +4,9 @@ using System;
 public class player : Sprite
 { 
     Vector2 mypos;
+    public Vector2 roundStartPos;
     globals g;
+    private int udMove, lrMove, moveRange;
 	
     [Export]
     public string myName;
@@ -49,23 +51,77 @@ public class player : Sprite
             return true;
     }
 
+    public bool CheckMoveBoundary(string direction)
+    {
+        if(direction == g.upButton){
+            //what the fuck
+            //Am I +2 from origin?
+            //Am I +1 or +1 L/R from origin?
+            //else OK
+            if(udMove < moveRange && lrMove == 0 || (udMove < (moveRange-1) && Mathf.Abs(lrMove) < moveRange)){
+                return true;
+            }
+            else
+                return false;
+        }
+        else if(direction == g.downButton){
+            if(udMove > -moveRange && lrMove == 0 || (udMove > -(moveRange-1) && Mathf.Abs(lrMove) < moveRange)){
+                return true;
+            }
+            else
+                return false;
+        }
+        else if(direction == g.leftButton){
+            if(lrMove > -moveRange && udMove == 0 || (lrMove > -(moveRange-1) && Mathf.Abs(udMove) < moveRange)){
+                return true;
+            }
+            else   
+                return false;
+        }
+        else if(direction == g.rightButton){
+            if(lrMove < moveRange && udMove == 0 || (lrMove < (moveRange-1) && Mathf.Abs(udMove) < moveRange)){
+                return true;
+            }
+            else
+                return false;
+        }
+        return false;
+        
+    }
+
     public void MoveThisSprite(string direction)
     {
         int x = 0, y = 0;
 
-        if (direction == g.downButton)
+        if (direction == g.downButton){
             y += 32;
-        else if (direction == g.upButton)
+            udMove--;
+        }
+        else if (direction == g.upButton){
             y -= 32;
-        else if (direction == g.leftButton)
+            udMove++;
+        }
+        else if (direction == g.leftButton){
             x -= 32;
-        else if (direction == g.rightButton)
+            lrMove--;
+        }
+        else if (direction == g.rightButton){
             x += 32;
+            lrMove++;
+        }
 
         mypos = GetPosition();
         mypos.x += x;
         mypos.y += y;
         SetPosition(mypos);
+    }
+
+    public void InitializeTurn()
+    {
+        roundStartPos = GetPosition();
+        udMove = 0;
+        lrMove = 0;
+        moveRange = 2;
     }
 
 //    public override void _Process(float delta)
