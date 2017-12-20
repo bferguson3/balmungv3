@@ -1,8 +1,10 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
-public enum inputModes { noInput, moving, combatMove }
+public enum inputModes { noInput, moving, combatMove, combatCommand }
 public enum battlePositions { standard, reversed, rtl, ltr, hasami, ambushed }
+public enum actors {player, enemy}
 
 public class globals : Node
 {
@@ -15,6 +17,7 @@ public class globals : Node
     public bool playerBlockedDown, playerBlockedUp, playerBlockedLeft, playerBlockedRight;
 
     public bool inCombat;
+    public List<Node> combatants = new List<Node>();// combatants;
 
     public override void _Ready()
     {
@@ -22,6 +25,7 @@ public class globals : Node
         leftButton = "ui_left";
         rightButton = "ui_right";
         downButton = "ui_down";
+        aButton = "ui_accept";
     }
 
 //    public override void _Process(float delta)

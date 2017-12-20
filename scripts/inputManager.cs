@@ -12,11 +12,15 @@ public class inputManager : Node
 
     player p;
     globals g;
+    combatOps c;
+    UI gui;
 
     public override void _Ready()
     {
         g = GetNode("/root/globals") as globals;
         p = GetNode("../playerSprite") as player;
+        c = GetNode("../combatOps") as combatOps;
+        gui = GetNode("../UI") as UI;
         g.inputMode = inputModes.moving;
     }
 
@@ -30,8 +34,25 @@ public class inputManager : Node
             }
         }
         else if(g.inputMode == inputModes.combatMove){
-            if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
-                p.MoveThisSprite(key);
+            if(key == g.aButton){
+                c.EndPlayerMovement();
+            }
+            else{
+                if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
+                    p.MoveThisSprite(key);
+                }
+            }
+        }
+        else if(g.inputMode == inputModes.combatCommand){
+            if(key == g.upButton ||
+                key == g.downButton ||
+                key == g.leftButton ||
+                key == g.rightButton){
+                    gui.MoveCombatSel(key);
+            }
+            if(key == g.aButton)
+            {
+                gui.ConfirmCombatSel();
             }
         }
     }
@@ -46,6 +67,20 @@ public class inputManager : Node
     public override void _PhysicsProcess(float delta)
     {
         UnpressAll();
+
+        if(g.acceptReleased && Input.IsActionPressed(g.aButton))
+        {
+            lastKey = g.aButton;
+            g.acceptPressed = true;
+            g.acceptReleased = false;
+            //FirstDepress(lastKey);
+            KeyAction(lastKey);
+        }
+        if(!g.acceptReleased && !Input.IsActionPressed(g.aButton))
+        {
+            g.acceptPressed = false;
+            g.acceptReleased = true;
+        }
 
         if(g.upReleased && Input.IsActionPressed(g.upButton))
         {

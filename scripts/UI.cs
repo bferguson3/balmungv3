@@ -14,9 +14,10 @@ public class UI : Sprite
     public npc collidingWith;
     player p;
     globals g;
-    Sprite combatUI;
+    Sprite combatUI, combatSel;
     combatOps c;
     Label statLbl, menuLbl, feedbackLbl;
+    private int combatSelNo;
 
     public override void _Draw(){
        if(combatTransitionStart){
@@ -93,6 +94,72 @@ public class UI : Sprite
         combatUI.Show();
     }
 
+    public void InitializePlayerMenu()
+    {
+        menuLbl.Text = "Attack  Move\nCast     Use";
+        combatSel.Show();
+        g.inputMode = inputModes.combatCommand;
+    }
+
+    public void HideSelectionText(){
+        menuLbl.Text = "";
+        combatSel.Hide();
+    }
+
+    public void MoveCombatSel(string key)
+    {
+        if(key == g.upButton)
+        {
+            if(combatSelNo > 1){
+                combatSelNo = combatSelNo - 2;
+            }
+        }
+        else if(key == g.downButton)
+        {
+            if(combatSelNo < 2){
+                combatSelNo = combatSelNo + 2;
+            }
+        }
+        else if(key == g.rightButton)
+        {
+            if(combatSelNo == 0 || combatSelNo == 2){
+                combatSelNo++;
+            }
+        }
+        else if(key == g.leftButton)
+        {
+            if(combatSelNo == 1 || combatSelNo == 3){
+                combatSelNo--;
+            }
+        }
+
+        switch(combatSelNo){
+            //230,175 is efult pos
+            case 0:
+                combatSel.SetPosition(new Vector2(230, 175));
+                break;
+            case 1:
+                combatSel.SetPosition(new Vector2(350, 175));
+                break;
+            case 2:
+                combatSel.SetPosition(new Vector2(230, 235));
+                break;
+            case 3:
+                combatSel.SetPosition(new Vector2(350, 235));
+                break;
+            default:
+                GD.Print("Invalid combat selection.");
+                break;
+        }
+    }
+
+    public void ConfirmCombatSel()
+    {
+        if(combatSelNo == 1){
+            c.StartPlayerMovement();
+        }
+    }
+
     public void UpdateCombatFeedback(string update)
     {
         feedbackLbl.Text = update;
@@ -103,8 +170,11 @@ public class UI : Sprite
         cam = GetNode("../playerSprite/Camera2D") as Camera2D;    
         p = GetNode("../playerSprite") as player;
         g = GetNode("/root/globals") as globals;
-        combatUI = GetNode("combatUI") as Sprite;
         c = GetNode("../combatOps") as combatOps;
+
+        combatUI = GetNode("combatUI") as Sprite;
+        combatSel = GetNode("combatUI/selector") as Sprite;
+        combatSelNo = 0;
 
         statLbl = GetNode("combatUI/charStats") as Label;
         menuLbl = GetNode("combatUI/menuSelTxt") as Label;

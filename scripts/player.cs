@@ -5,6 +5,7 @@ public class player : Sprite
 { 
     Vector2 mypos;
     public Vector2 roundStartPos;
+    public bool turnTaken;
     globals g;
     private int udMove, lrMove, moveRange;
 	
@@ -54,10 +55,6 @@ public class player : Sprite
     public bool CheckMoveBoundary(string direction)
     {
         if(direction == g.upButton){
-            //what the fuck
-            //Am I +2 from origin?
-            //Am I +1 or +1 L/R from origin?
-            //else OK
             if(udMove < moveRange && lrMove == 0 || (udMove < (moveRange-1) && Mathf.Abs(lrMove) < moveRange)){
                 return true;
             }

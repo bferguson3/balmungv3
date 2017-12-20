@@ -7,12 +7,15 @@ public class npc : Sprite
 {
     [Export]
     public npcType myType;
+    public bool turnTaken;
     [Export]
     public string myName;
     [Export]
     public int ATK;
     [Export]
     public int DEF;
+    [Export]
+    public int DEX;
     [Export]
     public int EXP;
     [Export]
@@ -30,7 +33,7 @@ public class npc : Sprite
     public override void _Ready()
     {
         //register_property("hp", &npc::myType, 100);
-        
+        //SetMeta("actor_tag", actors.enemy);
     }
 
 //    public override void _Process(float delta)

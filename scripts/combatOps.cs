@@ -20,6 +20,24 @@ public class combatOps : Node
     }
     public void SetupCombat(npc collidingWith)
     {
+            //TODO: make this better
+            g.combatants.Add(collidingWith);
+            g.combatants.Add(p);
+            foreach(Node n in g.combatants){
+                if(n is player){
+                    //player
+                    var me = n as player;
+                    me.actionWeight = 0;
+                    me.turnTaken = false;
+                }
+                else if(n is npc){
+                    //NPC
+                    var me = n as npc;
+                    me.actionWeight = 0;
+                    me.turnTaken = false;
+                }
+            }
+
             SetBattlePositions(battlePositions.standard, p, collidingWith);
             gui.InitializeCombatUI();
             
@@ -32,12 +50,67 @@ public class combatOps : Node
         //Iterate through combatants
         //Determine initiative via DEX
         //TODO: Fix this mess
-        gui.UpdateCombatFeedback("Player(0)'s turn. Move? OK.\nSelect move position.");
-        p.InitializeTurn();
+        int highDex = 0;
+        Node nextActor = p;
+        foreach(Node n in g.combatants){
+            if(n is player){
+                var me = n as player;
+                if(me.DEX - me.actionWeight >= highDex && !me.turnTaken){ //if my DEX is greater than or equal to last
+                    highDex = me.DEX;
+                    nextActor = n;
+                }
+                //player
+            }
+            else if(n is npc){
+                var me = n as npc;
+                if(me.DEX - me.actionWeight > highDex && !me.turnTaken){
+                    highDex = me.DEX;
+                    nextActor = n;
+                }
+                //NPC
+            }
+        }
+
+        if(nextActor is player)
+        {
+            var me = nextActor as player;
+            string f = me.myName;
+            gui.UpdateCombatFeedback(f + "'s turn. \nCommand?");
+            me.InitializeTurn();
+            gui.InitializePlayerMenu();
+            //DONT FORGET TO TOGGLE THE ACTEDTHISTURN VARIABLE AFTER ACTION??? or here?
+        }
+        else if(nextActor is npc)
+        {
+            var me = nextActor as npc;
+            string f = me.myName;
+            gui.UpdateCombatFeedback(f + "'s turn...\n ");
+            //ENUM TYPE: MELEE, RANGED MONSTER.
+            //IF MELEE, CHECK HP VS MORALE
+            //IF HIGH ENOUGH, MOVE TOWARDS CLOSEST PC by x/y compare and collision check
+            //IF WITHIN $8DIR, MELEE ATTACK INSTEAD
+            //...IF RANGED, CHECK 8DIR, if false, RAYCAST TO NEARESTENEMY
+            //IF BLOCKED, MOVE TOWARDS CLOSEST ENEMY
+            //IF NOT BLOCKED, FIRE
+            //TOGGLE ACTEDTHISTURN
+        }
+
+    }
+
+    public void StartPlayerMovement()
+    {
+        g.inputMode = inputModes.combatMove;
         ground.DrawPlayerMoveZone();
         g.inputMode = inputModes.combatMove;
-        
+        gui.UpdateCombatFeedback("Moving.\nDestination?");
+    }
 
+    public void EndPlayerMovement()
+    {
+        ground.HidePlayerMoveZone();
+        g.inputMode = inputModes.noInput;
+        gui.UpdateCombatFeedback("");
+        gui.HideSelectionText();
     }
     public override void _Ready()
     {   

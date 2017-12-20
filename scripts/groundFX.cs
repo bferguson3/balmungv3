@@ -16,6 +16,12 @@ public class groundFX : Sprite
         Update();
     }
 
+    public void HidePlayerMoveZone()
+    {
+        drawingMoveArea = false;
+        Update();
+    }
+
     public override void _Draw()
     {
         if(drawingMoveArea){
