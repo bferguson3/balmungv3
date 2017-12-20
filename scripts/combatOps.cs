@@ -111,6 +111,9 @@ public class combatOps : Node
         g.inputMode = inputModes.noInput;
         gui.UpdateCombatFeedback("");
         gui.HideSelectionText();
+        p.actionWeight = 0;
+        p.turnTaken = true;
+        BeginNextTurn();
     }
     public override void _Ready()
     {   
