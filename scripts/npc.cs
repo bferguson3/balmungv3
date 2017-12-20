@@ -28,7 +28,7 @@ public class npc : Sprite
     public int dropRate;
     [Export]
     public int droppedG;
-    public int initiative;
+    public int actionWeight;
     
     public override void _Ready()
     {

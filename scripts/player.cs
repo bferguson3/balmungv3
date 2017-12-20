@@ -31,7 +31,7 @@ public class player : Sprite
     public int MaxMP;
     [Export]
     public int MP;
-    public int initiative;
+    public int actionWeight;
 
     public override void _Ready()
     {
