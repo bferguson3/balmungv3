@@ -50,8 +50,9 @@ public class combatOps : Node
         //Iterate through combatants
         //Determine initiative via DEX
         //TODO: Fix this mess
+        //GD.Print("Finding next highest speed who hasn't acted...");
         int highDex = 0;
-        Node nextActor = p;
+        Node nextActor = g;
         foreach(Node n in g.combatants){
             if(n is player){
                 var me = n as player;
@@ -70,7 +71,7 @@ public class combatOps : Node
                 //NPC
             }
         }
-
+        GD.Print("Next Turn: " + nextActor.GetName());
         if(nextActor is player)
         {
             var me = nextActor as player;
@@ -85,14 +86,53 @@ public class combatOps : Node
             var me = nextActor as npc;
             string f = me.myName;
             gui.UpdateCombatFeedback(f + "'s turn...\n ");
+            me.turnTaken = true;
             //ENUM TYPE: MELEE, RANGED MONSTER.
             //IF MELEE, CHECK HP VS MORALE
-            //IF HIGH ENOUGH, MOVE TOWARDS CLOSEST PC by x/y compare and collision check
-            //IF WITHIN $8DIR, MELEE ATTACK INSTEAD
-            //...IF RANGED, CHECK 8DIR, if false, RAYCAST TO NEARESTENEMY
+            
+            if(me.aIType == aITypes.melee)
+            {
+                if(me.HP <= me.moraleScore){ //run away
+                    me.fleeing = true; //for Virtue checks
+                    me.MoveForEscape();
+                }
+                else //if I am brave
+                {
+                    if(me.CheckAdjacentToPC()){ //see if I'm near a player
+                        me.AttackAdjacent(); //if I am, attack them
+                    }
+                    else{ //if I'm not
+                        //GD.Print("attempting move");
+                        me.MoveToClosestPC(); //move to the nearest one
+                    }
+                }
+            }
+            else if(me.aIType == aITypes.ranged)
+            {
+                //I am ranged, so
+                //...IF RANGED, CHECK 8DIR, if false, RAYCAST TO NEARESTENEMY
             //IF BLOCKED, MOVE TOWARDS CLOSEST ENEMY
             //IF NOT BLOCKED, FIRE
+            }
+            //IF HIGH ENOUGH, MOVE TOWARDS CLOSEST PC by x/y compare and collision check
+            //IF WITHIN $8DIR, MELEE ATTACK INSTEAD
+            
             //TOGGLE ACTEDTHISTURN
+        }
+        else if(nextActor is globals){
+            GD.Print("resetting turn");
+            foreach(Node j in g.combatants){
+                if(j is player){
+                    var me = j as player;
+                    me.turnTaken = false;
+                }
+                else if(j is npc){
+                    var me = j as npc;
+                    me.turnTaken = false;
+                }
+            }
+            BeginNextTurn();
+            return;
         }
 
     }

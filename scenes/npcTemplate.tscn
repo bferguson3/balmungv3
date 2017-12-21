@@ -15,6 +15,18 @@ vframes = 60
 hframes = 32
 frame = 608
 script = ExtResource( 2 )
+myType = 0
+aIType = 0
+myName = null
+ATK = 0
+DEF = 0
+DEX = 0
+EXP = 0
+HP = 0
+MP = 0
+droppedItem = null
+dropRate = 0
+droppedG = 0
 
 [node name="Area2D" type="Area2D" parent="."]
 
@@ -29,5 +41,61 @@ audio_bus_name = "Master"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 
 shape = SubResource( 1 )
+
+[node name="npcRay1" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+
+[node name="npcRay2" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 32 )
+collision_mask = 1
+
+[node name="npcRay3" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+
+[node name="npcRay4" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 32 )
+collision_mask = 1
+
+[node name="npcRay5" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+
+[node name="npcRay6" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 32 )
+collision_mask = 1
+
+[node name="npcRay7" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+
+[node name="npcRay8" type="RayCast2D" parent="."]
+
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 32 )
+collision_mask = 1
 
 

@@ -1,8 +1,13 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://angband32.tex" type="Texture" id=1]
 [ext_resource path="res://scripts/player.cs" type="Script" id=2]
 [ext_resource path="res://scripts/playerRay.cs" type="Script" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 10, 10 )
 
 [node name="playerSprite" type="Sprite"]
 
@@ -13,6 +18,8 @@ hframes = 32
 frame = 585
 script = ExtResource( 2 )
 myName = "Roddick"
+ATK = 0
+DEF = 0
 STR = 20
 DEX = 10
 INT = 10
@@ -79,5 +86,19 @@ drag_margin_bottom = 0.15
 editor_draw_screen = true
 editor_draw_limits = false
 editor_draw_drag_margin = false
+
+[node name="Area2D" type="Area2D" parent="."]
+
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+
+shape = SubResource( 1 )
 
 

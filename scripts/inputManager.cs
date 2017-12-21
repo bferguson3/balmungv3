@@ -9,11 +9,13 @@ public class inputManager : Node
     float repeatTimer = 0.150f;
     string lastKey;
     bool repeatedOnce = false;
+    private Timer doubleProtTimer;
 
     player p;
     globals g;
     combatOps c;
     UI gui;
+    private bool canPush = true;
 
     public override void _Ready()
     {
@@ -22,6 +24,17 @@ public class inputManager : Node
         c = GetNode("../combatOps") as combatOps;
         gui = GetNode("../UI") as UI;
         g.inputMode = inputModes.moving;
+
+        //doubleProtTimer = new Timer();
+        //doubleProtTimer.OneShot = true;
+        //doubleProtTimer.Connect("timeout", this, "KeyOK");
+        //doubleProtTimer.SetWaitTime(0.05f);
+        //AddChild(doubleProtTimer);
+    }
+
+    private void KeyOK(){
+        GD.Print("ok");
+        canPush = true;
     }
 
     void KeyAction(string key)
@@ -61,6 +74,7 @@ public class inputManager : Node
     {
         repeatedOnce = false;
         startRepeat = true;
+        canPush = false;
         KeyAction(key);
     }
 
@@ -74,41 +88,42 @@ public class inputManager : Node
             g.acceptPressed = true;
             g.acceptReleased = false;
             //FirstDepress(lastKey);
-            KeyAction(lastKey);
+           // if(canPush)
+                FirstDepress(lastKey);
         }
-        if(!g.acceptReleased && !Input.IsActionPressed(g.aButton))
-        {
-            g.acceptPressed = false;
-            g.acceptReleased = true;
-        }
+        
 
         if(g.upReleased && Input.IsActionPressed(g.upButton))
         {
             lastKey = g.upButton;
             g.upPressed = true;
             g.upReleased = false;
-            FirstDepress(lastKey);
+            //if(canPush)
+                FirstDepress(lastKey);
         }
         else if (g.downReleased && Input.IsActionPressed(g.downButton))
         {
             lastKey = g.downButton;
             g.downPressed = true;
             g.downReleased = false;
-            FirstDepress(lastKey);
+            //if(canPush)
+                FirstDepress(lastKey);
         }
         else if (g.leftReleased && Input.IsActionPressed(g.leftButton))
         {
             lastKey = g.leftButton;
             g.leftPressed = true;
             g.leftReleased = false;
-            FirstDepress(lastKey);
+            //if(canPush)
+                FirstDepress(lastKey);
         }
         else if (g.rightReleased && Input.IsActionPressed(g.rightButton))
         {
             lastKey = g.rightButton;
             g.rightPressed = true;
             g.rightReleased = false;
-            FirstDepress(lastKey);
+            //if(canPush)
+                FirstDepress(lastKey);
         }
 
         if (startRepeat)
@@ -127,6 +142,29 @@ public class inputManager : Node
         if(repeatedOnce && currentTimer > repeatTimer)
             RepeatPress(lastKey);
 
+        
+        CheckDepress();
+
+        //if(!canPush)
+        //{
+            //doubleProtTimer.SetWaitTime(0.05f);
+            //doubleProtTimer.Start();
+            //canPush = true;
+        //}
+       
+    }
+
+    void CheckDepress(){
+         if(!g.acceptReleased && !Input.IsActionPressed(g.aButton))
+        {
+            //g.acceptPressed = false;
+            g.acceptReleased = true;
+            if(lastKey == g.aButton){
+                currentTimer = 0;
+                startRepeat = false;
+            }
+
+        }
         if (!g.rightReleased && !Input.IsActionPressed(g.rightButton))
         {
             g.rightReleased = true;
@@ -173,6 +211,7 @@ public class inputManager : Node
 
     void UnpressAll()
     {
+        g.acceptPressed = false;
         g.upPressed = false;
         g.downPressed = false;
         g.leftPressed = false;
