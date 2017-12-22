@@ -27,72 +27,88 @@ public class inputManager : Node
 
     }
 
-    private void KeyOK(){
+    private void KeyOK()
+    {
         GD.Print("ok");
         canPush = true;
     }
 
     void KeyAction(string key)
     {
-        if(g.inputMode == inputModes.moving)
+        if (g.inputMode == inputModes.moving)
         {
-            if(key == g.aButton){
+            if (key == g.aButton)
+            {
                 gui.OpenOOCMenu();
                 g.inputMode = inputModes.oocMenuRoot;
             }
-            if(p.CheckCollision(key))
+            if (p.CheckCollision(key))
             {
                 p.MoveThisSprite(key);
             }
         }
-        else if(g.inputMode == inputModes.combatMove){
-            if(key == g.aButton){
+        else if (g.inputMode == inputModes.combatMove)
+        {
+            if (key == g.aButton)
+            {
                 c.EndPlayerMovement();
             }
-            else if(key == g.bButton)
+            else if (key == g.bButton)
             {
                 c.CancelPlayerMovement();
             }
-            else{
-                if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
+            else
+            {
+                if (p.CheckCollision(key) && p.CheckMoveBoundary(key))
+                {
                     p.MoveThisSprite(key);
                 }
             }
         }
-        else if(g.inputMode == inputModes.combatCommand){
-            if(key == g.upButton ||
+        else if (g.inputMode == inputModes.combatCommand)
+        {
+            if (key == g.upButton ||
                 key == g.downButton ||
                 key == g.leftButton ||
-                key == g.rightButton){
-                    gui.MoveCombatSel(key);
+                key == g.rightButton)
+            {
+                gui.MoveCombatSel(key);
             }
-            if(key == g.aButton)
+            if (key == g.aButton)
             {
                 gui.ConfirmCombatSel();
             }
-            
+
         }
-        else if(g.inputMode == inputModes.oocMenuRoot){
-            if(key == g.aButton){
+        else if (g.inputMode == inputModes.oocMenuRoot)
+        {
+            if (key == g.aButton)
+            {
                 gui.ConfirmOOCSel();
             }
-            else if(key == g.bButton){
+            else if (key == g.bButton)
+            {
                 gui.CloseOOCMenu();
                 g.inputMode = inputModes.moving;
             }
         }
-        else if(g.inputMode == inputModes.selectToTalk){
-            if(key == g.bButton){
+        else if (g.inputMode == inputModes.selectToTalk)
+        {
+            if (key == g.bButton)
+            {
                 gui.HideMapSelector();
                 g.inputMode = inputModes.moving;
             }
-            else if(key == g.aButton){
+            else if (key == g.aButton)
+            {
                 gui.StartConversation();
             }
-            else if(key == g.rightButton || key == g.upButton){
+            else if (key == g.rightButton || key == g.upButton)
+            {
                 gui.SelectNextOnMap(false);
             }
-            else if(key == g.leftButton || key == g.downButton){
+            else if (key == g.leftButton || key == g.downButton)
+            {
                 gui.SelectNextOnMap(true);
             }
         }
@@ -110,14 +126,14 @@ public class inputManager : Node
     {
         UnpressAll();
 
-        if(g.acceptReleased && Input.IsActionPressed(g.aButton))
+        if (g.acceptReleased && Input.IsActionPressed(g.aButton))
         {
             lastKey = g.aButton;
             g.acceptPressed = true;
             g.acceptReleased = false;
             FirstDepress(lastKey);
         }
-        else if(g.cancelReleased && Input.IsActionPressed(g.bButton))
+        else if (g.cancelReleased && Input.IsActionPressed(g.bButton))
         {
             lastKey = g.bButton;
             g.cancelPressed = true;
@@ -125,13 +141,13 @@ public class inputManager : Node
             FirstDepress(lastKey);
         }
 
-        if(g.upReleased && Input.IsActionPressed(g.upButton))
+        if (g.upReleased && Input.IsActionPressed(g.upButton))
         {
             lastKey = g.upButton;
             g.upPressed = true;
             g.upReleased = false;
             //if(canPush)
-                FirstDepress(lastKey);
+            FirstDepress(lastKey);
         }
         else if (g.downReleased && Input.IsActionPressed(g.downButton))
         {
@@ -139,7 +155,7 @@ public class inputManager : Node
             g.downPressed = true;
             g.downReleased = false;
             //if(canPush)
-                FirstDepress(lastKey);
+            FirstDepress(lastKey);
         }
         else if (g.leftReleased && Input.IsActionPressed(g.leftButton))
         {
@@ -147,7 +163,7 @@ public class inputManager : Node
             g.leftPressed = true;
             g.leftReleased = false;
             //if(canPush)
-                FirstDepress(lastKey);
+            FirstDepress(lastKey);
         }
         else if (g.rightReleased && Input.IsActionPressed(g.rightButton))
         {
@@ -155,7 +171,7 @@ public class inputManager : Node
             g.rightPressed = true;
             g.rightReleased = false;
             //if(canPush)
-                FirstDepress(lastKey);
+            FirstDepress(lastKey);
         }
 
         if (startRepeat)
@@ -171,34 +187,37 @@ public class inputManager : Node
             }
         }
 
-        if(repeatedOnce && currentTimer > repeatTimer)
+        if (repeatedOnce && currentTimer > repeatTimer)
             RepeatPress(lastKey);
 
-        
+
         CheckDepress();
 
         //if(!canPush)
         //{
-            //doubleProtTimer.SetWaitTime(0.05f);
-            //doubleProtTimer.Start();
-            //canPush = true;
+        //doubleProtTimer.SetWaitTime(0.05f);
+        //doubleProtTimer.Start();
+        //canPush = true;
         //}
-       
+
     }
 
-    void CheckDepress(){
-         if(!g.acceptReleased && !Input.IsActionPressed(g.aButton))
+    void CheckDepress()
+    {
+        if (!g.acceptReleased && !Input.IsActionPressed(g.aButton))
         {
             g.acceptReleased = true;
-            if(lastKey == g.aButton){
+            if (lastKey == g.aButton)
+            {
                 currentTimer = 0;
                 startRepeat = false;
             }
         }
-        if(!g.cancelReleased && !Input.IsActionPressed(g.bButton))
+        if (!g.cancelReleased && !Input.IsActionPressed(g.bButton))
         {
             g.cancelReleased = true;
-            if(lastKey == g.bButton){
+            if (lastKey == g.bButton)
+            {
                 currentTimer = 0;
                 startRepeat = false;
             }
@@ -206,7 +225,8 @@ public class inputManager : Node
         if (!g.rightReleased && !Input.IsActionPressed(g.rightButton))
         {
             g.rightReleased = true;
-            if(lastKey == g.rightButton){
+            if (lastKey == g.rightButton)
+            {
                 currentTimer = 0;
                 startRepeat = false;
             }
@@ -227,16 +247,16 @@ public class inputManager : Node
             {
                 currentTimer = 0;
                 startRepeat = false;
-            
+
             }
         }
         if (!g.downReleased && !Input.IsActionPressed(g.downButton))
         {
             g.downReleased = true;
-            if(lastKey == g.downButton)
+            if (lastKey == g.downButton)
             {
                 currentTimer = 0;
-                startRepeat = false;   
+                startRepeat = false;
             }
         }
     }

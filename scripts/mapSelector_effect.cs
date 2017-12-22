@@ -13,31 +13,36 @@ public class mapSelector_effect : Sprite
     {
         // Called every time the node is added to the scene.
         // Initialization here
-        
+
     }
 
     public override void _Process(float delta)
     {
-//        // Called every frame. Delta is time since last frame.
-//        // Update game logic here.
-        if(this.Visible){
-            if(newAlpha > 0.1f && fadeOut){
+        //        // Called every frame. Delta is time since last frame.
+        //        // Update game logic here.
+        if (this.Visible)
+        {
+            if (newAlpha > 0.1f && fadeOut)
+            {
                 newAlpha = newAlpha - (0.5f * delta);
             }
-            else{
+            else
+            {
                 fadeOut = false;
             }
-            if(newAlpha < 0.5f && !fadeOut){
+            if (newAlpha < 0.5f && !fadeOut)
+            {
                 newAlpha = newAlpha + (0.5f * delta);
             }
-            else{
+            else
+            {
                 fadeOut = true;
             }
 
             Color newC = this.Modulate;
             newC.a = newAlpha;
             this.SetModulate(newC);
-            
+
         }
     }
 }

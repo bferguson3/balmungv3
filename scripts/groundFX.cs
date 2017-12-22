@@ -24,7 +24,8 @@ public class groundFX : Sprite
 
     public override void _Draw()
     {
-        if(drawingMoveArea){
+        if (drawingMoveArea)
+        {
             //Determine what is the area that needs to be colored and fill it in.
             //Draw grid by grid. e.g. one square up, one square down, 1 by 1.
             //but first, check to see if it's within "combat bounds".
@@ -36,9 +37,12 @@ public class groundFX : Sprite
             //shown or hidden based on a random(int) and terrain type.
             Vector2 rPos;
             Vector2 rSize = new Vector2(32, 32);
-            for(int r = -2; r < 3; r++){
-                for(int q = -2; q < 3; q++){
-                    if(Mathf.Abs(r) + Mathf.Abs(q) < 3){
+            for (int r = -2; r < 3; r++)
+            {
+                for (int q = -2; q < 3; q++)
+                {
+                    if (Mathf.Abs(r) + Mathf.Abs(q) < 3)
+                    {
                         rPos = p.GetPosition();
                         rPos.x += (r * 32) - 16;
                         rPos.y += (q * 32) - 16;
@@ -49,8 +53,8 @@ public class groundFX : Sprite
             }
         }
     }
-//    public override void _Process(float delta)
-//    {
-//        
-//    }
+    //    public override void _Process(float delta)
+    //    {
+    //        
+    //    }
 }

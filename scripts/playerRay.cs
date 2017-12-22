@@ -18,15 +18,16 @@ public class playerRay : RayCast2D
         p = GetParent() as player;
         AddException(GetNode("../Area2D"));
     }
-    
+
     private void CheckCombat(Node col)
     {
         collidingWith = col.GetParent() as npc;
-        if(collidingWith == null)
+        if (collidingWith == null)
             return;
-        
+
         ui.collidingWith = collidingWith;
-        if(ui.collidingWith.myType == npcType.enemy){
+        if (ui.collidingWith.myType == npcType.enemy)
+        {
             //TODO: Move elsewhere?
             g.inCombat = true;
             g.inputMode = inputModes.noInput;
@@ -41,9 +42,10 @@ public class playerRay : RayCast2D
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+                if (GetParent() == col.GetParent()) { }
+                else
+                {
+                    if (!g.inCombat)
                         CheckCombat(col);
                     g.playerBlockedDown = true;
                 }
@@ -56,9 +58,10 @@ public class playerRay : RayCast2D
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+                if (GetParent() == col.GetParent()) { }
+                else
+                {
+                    if (!g.inCombat)
                         CheckCombat(col);
                     g.playerBlockedUp = true;
                 }
@@ -71,9 +74,10 @@ public class playerRay : RayCast2D
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+                if (GetParent() == col.GetParent()) { }
+                else
+                {
+                    if (!g.inCombat)
                         CheckCombat(col);
                     g.playerBlockedLeft = true;
                 }
@@ -82,14 +86,15 @@ public class playerRay : RayCast2D
                 g.playerBlockedLeft = false;
 
         }
-        else if(GetName() == "playerRayRight")
+        else if (GetName() == "playerRayRight")
         {
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+                if (GetParent() == col.GetParent()) { }
+                else
+                {
+                    if (!g.inCombat)
                         CheckCombat(col);
                     g.playerBlockedRight = true;
                 }

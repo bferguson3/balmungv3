@@ -10,7 +10,7 @@ public class combatOps : Node
     groundFX ground;
     public void SetBattlePositions(battlePositions bpos, player pl, npc np)
     {
-        if(bpos == battlePositions.standard)
+        if (bpos == battlePositions.standard)
         {
             //TODO
             //Properly position player and enemies. Atm splits +3/-3 squares.
@@ -20,51 +20,60 @@ public class combatOps : Node
     }
     public void SetupCombat(npc collidingWith)
     {
-            //TODO: make this better
-            g.combatants.Add(collidingWith);
-            g.combatants.Add(p);
-            foreach(Node n in g.combatants){
-                if(n is player){
-                    //player
-                    var me = n as player;
-                    me.actionWeight = 0;
-                    me.turnTaken = false;
-                }
-                else if(n is npc){
-                    //NPC
-                    var me = n as npc;
-                    me.actionWeight = 0;
-                    me.turnTaken = false;
-                }
+        //TODO: make this better
+        g.combatants.Add(collidingWith);
+        g.combatants.Add(p);
+        foreach (Node n in g.combatants)
+        {
+            if (n is player)
+            {
+                //player
+                var me = n as player;
+                me.actionWeight = 0;
+                me.turnTaken = false;
             }
+            else if (n is npc)
+            {
+                //NPC
+                var me = n as npc;
+                me.actionWeight = 0;
+                me.turnTaken = false;
+            }
+        }
 
-            SetBattlePositions(battlePositions.standard, p, collidingWith);
-            gui.InitializeCombatUI();
-            
-            combatWaitTimer.Connect("timeout", this, "BeginNextTurn");
-            combatWaitTimer.SetWaitTime(1.0f);
-            combatWaitTimer.OneShot = true;
-            combatWaitTimer.Start();
+        SetBattlePositions(battlePositions.standard, p, collidingWith);
+        gui.InitializeCombatUI();
+
+        combatWaitTimer.Connect("timeout", this, "BeginNextTurn");
+        combatWaitTimer.SetWaitTime(1.0f);
+        combatWaitTimer.OneShot = true;
+        combatWaitTimer.Start();
     }
-    public void BeginNextTurn(){
+    public void BeginNextTurn()
+    {
         //Iterate through combatants
         //Determine initiative via DEX
         //TODO: Fix this mess
         //GD.Print("Finding next highest speed who hasn't acted...");
         int highDex = 0;
         Node nextActor = g;
-        foreach(Node n in g.combatants){
-            if(n is player){
+        foreach (Node n in g.combatants)
+        {
+            if (n is player)
+            {
                 var me = n as player;
-                if(me.DEX - me.actionWeight >= highDex && !me.turnTaken){ //if my DEX is greater than or equal to last
+                if (me.DEX - me.actionWeight >= highDex && !me.turnTaken)
+                { //if my DEX is greater than or equal to last
                     highDex = me.DEX;
                     nextActor = n;
                 }
                 //player
             }
-            else if(n is npc){
+            else if (n is npc)
+            {
                 var me = n as npc;
-                if(me.DEX - me.actionWeight > highDex && !me.turnTaken){
+                if (me.DEX - me.actionWeight > highDex && !me.turnTaken)
+                {
                     highDex = me.DEX;
                     nextActor = n;
                 }
@@ -72,7 +81,7 @@ public class combatOps : Node
             }
         }
         GD.Print("Next Turn: " + nextActor.GetName());
-        if(nextActor is player)
+        if (nextActor is player)
         {
             var me = nextActor as player;
             string f = me.myName;
@@ -81,7 +90,7 @@ public class combatOps : Node
             gui.InitializePlayerMenu();
             //DONT FORGET TO TOGGLE THE ACTEDTHISTURN VARIABLE AFTER ACTION??? or here?
         }
-        else if(nextActor is npc)
+        else if (nextActor is npc)
         {
             var me = nextActor as npc;
             string f = me.myName;
@@ -89,44 +98,51 @@ public class combatOps : Node
             me.turnTaken = true;
             //ENUM TYPE: MELEE, RANGED MONSTER.
             //IF MELEE, CHECK HP VS MORALE
-            
-            if(me.aIType == aITypes.melee)
+
+            if (me.aIType == aITypes.melee)
             {
-                if(me.HP <= me.moraleScore){ //run away
+                if (me.HP <= me.moraleScore)
+                { //run away
                     me.fleeing = true; //for Virtue checks
                     me.MoveForEscape();
                 }
                 else //if I am brave
                 {
-                    if(me.CheckAdjacentToPC()){ //see if I'm near a player
+                    if (me.CheckAdjacentToPC())
+                    { //see if I'm near a player
                         me.AttackAdjacent(); //if I am, attack them
                     }
-                    else{ //if I'm not
+                    else
+                    { //if I'm not
                         //GD.Print("attempting move");
                         me.MoveToClosestPC(); //move to the nearest one
                     }
                 }
             }
-            else if(me.aIType == aITypes.ranged)
+            else if (me.aIType == aITypes.ranged)
             {
                 //I am ranged, so
                 //...IF RANGED, CHECK 8DIR, if false, RAYCAST TO NEARESTENEMY
-            //IF BLOCKED, MOVE TOWARDS CLOSEST ENEMY
-            //IF NOT BLOCKED, FIRE
+                //IF BLOCKED, MOVE TOWARDS CLOSEST ENEMY
+                //IF NOT BLOCKED, FIRE
             }
             //IF HIGH ENOUGH, MOVE TOWARDS CLOSEST PC by x/y compare and collision check
             //IF WITHIN $8DIR, MELEE ATTACK INSTEAD
-            
+
             //TOGGLE ACTEDTHISTURN
         }
-        else if(nextActor is globals){
+        else if (nextActor is globals)
+        {
             GD.Print("resetting turn");
-            foreach(Node j in g.combatants){
-                if(j is player){
+            foreach (Node j in g.combatants)
+            {
+                if (j is player)
+                {
                     var me = j as player;
                     me.turnTaken = false;
                 }
-                else if(j is npc){
+                else if (j is npc)
+                {
                     var me = j as npc;
                     me.turnTaken = false;
                 }
@@ -156,7 +172,8 @@ public class combatOps : Node
 
     public void EndPlayerMovement()
     {
-        if(p.GetPosition() != p.roundStartPos){
+        if (p.GetPosition() != p.roundStartPos)
+        {
             ground.HidePlayerMoveZone();
             g.inputMode = inputModes.noInput;
             gui.UpdateCombatFeedback("");
@@ -167,7 +184,7 @@ public class combatOps : Node
         }
     }
     public override void _Ready()
-    {   
+    {
         gui = GetNode("../UI") as UI;
         p = GetNode("../playerSprite") as player;
         ground = GetNode("../groundFX") as groundFX;
@@ -177,7 +194,7 @@ public class combatOps : Node
         this.AddChild(combatWaitTimer);
     }
 
-//    public override void _Process(float delta)
-//    {
-//    }
+    //    public override void _Process(float delta)
+    //    {
+    //    }
 }
