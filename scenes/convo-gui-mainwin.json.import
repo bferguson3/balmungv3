@@ -1,0 +1,17 @@
+[remap]
+
+importer="org.vnen.tiled_importer"
+type="PackedScene"
+path="res://.import/convo-gui-mainwin.json-705b5fcd9e8d99cfc28fdb1d24a61947.scn"
+
+[deps]
+
+source_md5="a61fe724f4cfd75e94f1613a982d9844"
+
+[params]
+
+post_script=""
+custom_properties=true
+bundle_tilesets=false
+save_tilesets=true
+tileset_directory="res://.import/tilesets/"

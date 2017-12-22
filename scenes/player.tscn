@@ -64,6 +64,42 @@ cast_to = Vector2( 0, 32 )
 collision_mask = 1
 script = ExtResource( 3 )
 
+[node name="diagonal1" type="RayCast2D" parent="."]
+
+rotation = 4.71239
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+script = ExtResource( 3 )
+
+[node name="diagonal2" type="RayCast2D" parent="."]
+
+rotation = 4.71239
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+script = ExtResource( 3 )
+
+[node name="diagonal3" type="RayCast2D" parent="."]
+
+rotation = 4.71239
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+script = ExtResource( 3 )
+
+[node name="diagonal4" type="RayCast2D" parent="."]
+
+rotation = 4.71239
+enabled = true
+exclude_parent = true
+cast_to = Vector2( 0, 48 )
+collision_mask = 1
+script = ExtResource( 3 )
+
 [node name="Camera2D" type="Camera2D" parent="."]
 
 anchor_mode = 1

@@ -7,16 +7,16 @@ public class UI : Sprite
     Rect2 frame, blackSquare;
     Camera2D cam;
     Timer fadeTicker;//, combatWaitTimer;
-    int fadeLoop = 0;
+    int fadeLoop = 0, oocSelNo;
     int rectSize = 92;
     bool[,] fadeRects = new bool[22,22];
     Vector2 upLeft, bsqPos;
     public npc collidingWith;
     player p;
     globals g;
-    Sprite combatUI, combatSel;
+    Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin;
     combatOps c;
-    Label statLbl, menuLbl, feedbackLbl;
+    Label statLbl, menuLbl, feedbackLbl, oocTxt;
     private int combatSelNo;
 
     public override void _Draw(){
@@ -52,8 +52,24 @@ public class UI : Sprite
         fadeTicker.Start();
 
         SetPosition(p.GetPosition() + new Vector2(-64, 0));
-        Show();
+        //Show();
     
+    }
+
+    public void OpenOOCMenu()
+    {
+        oocMenu.Show();
+        oocSel.Show();
+        oocSelNo = 0;
+        var cam = p.FindNode("Camera2D") as Camera2D;
+        SetPosition(cam.GetCameraPosition());
+        oocSel.SetPosition(new Vector2(oocSel.Position.x, -115f));
+    }
+
+    public void CloseOOCMenu()
+    {
+        oocMenu.Hide();
+        oocSel.Hide();
     }
 
     public void StartFadeIn()
@@ -160,6 +176,16 @@ public class UI : Sprite
         }
     }
 
+    public void ConfirmOOCSel()
+    {
+        if(oocSelNo == 0)
+        {
+            g.inputMode = inputModes.selectToTalk;
+            p.SelectAdjacentNPCs();
+            oocMenu.Hide();
+        }
+    }
+
     public void UpdateCombatFeedback(string update)
     {
         feedbackLbl.Text = update;
@@ -167,10 +193,16 @@ public class UI : Sprite
     
     public override void _Ready()
     {
+        Show();
         cam = GetNode("../playerSprite/Camera2D") as Camera2D;    
         p = GetNode("../playerSprite") as player;
         g = GetNode("/root/globals") as globals;
         c = GetNode("../combatOps") as combatOps;
+
+        oocMenu = GetNode("oocMenu") as Sprite;
+        oocSel = GetNode("oocMenu/oocSel") as Sprite;
+        oocTxt = GetNode("oocMenu/menuTxt") as Label;
+        dialogueWin = GetNode("dialogueWin") as Sprite;
 
         combatUI = GetNode("combatUI") as Sprite;
         combatSel = GetNode("combatUI/selector") as Sprite;
@@ -179,6 +211,10 @@ public class UI : Sprite
         statLbl = GetNode("combatUI/charStats") as Label;
         menuLbl = GetNode("combatUI/menuSelTxt") as Label;
         feedbackLbl = GetNode("combatUI/feedbackTxt") as Label;
+
+        combatUI.Hide();
+        oocMenu.Hide();
+        dialogueWin.Hide();
 
         fadeTicker = new Timer();
         this.AddChild(fadeTicker);

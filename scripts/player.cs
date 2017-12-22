@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public class player : Sprite
 { 
@@ -32,10 +33,67 @@ public class player : Sprite
     [Export]
     public int MP;
     public int actionWeight;
+    RayCast2D[] diagonals = new RayCast2D[4];
+    RayCast2D[] laterals = new RayCast2D[4];
+    List<Node> targets = new List<Node>();
 
     public override void _Ready()
     {
         g = GetNode("/root/globals") as globals;
+        for(int c = 1; c <= 4; c++){
+            diagonals[c-1] = GetNode("diagonal" + c.ToString()) as RayCast2D;
+            diagonals[c-1].SetRotationDegrees(((c*2)-1)*45f);
+            diagonals[c-1].AddException(this.GetNode("Area2D"));
+        }
+        laterals[0] = GetNode("playerRayDown") as RayCast2D;
+        laterals[1] = GetNode("playerRayUp") as RayCast2D;
+        laterals[2] = GetNode("playerRayLeft") as RayCast2D;
+        laterals[3] = GetNode("playerRayRight") as RayCast2D;
+        
+    }
+
+    public void SelectAdjacentNPCs()
+    {
+        //Use 8 directional rays
+        //TODO: fix collision udlr?
+        //For now iterate differently
+        //add to List<> of possibilities
+        //Selector position = target.position
+        targets.Clear();
+        FindCollidingTargets();
+        //
+        foreach(var m in targets)
+            GD.Print(m);
+        //
+    }
+
+    private void FindCollidingTargets()
+    {
+        if(g.inputMode == inputModes.selectToTalk){
+            for(int c = 0; c < 4; c++){
+                if(diagonals[c].IsColliding()){
+                    var col = diagonals[c].GetCollider() as Node;
+                    if(col.GetParent() is npc){
+                        var me = col.GetParent() as npc;
+                        if(me.myType == npcType.talker){
+                            //Do I talk?
+                            //Yes, so I can return myself as a GOOD target for selectToTalk
+                            targets.Add(me);
+                        }
+                    }
+                }
+                if(laterals[c].IsColliding()){
+                    var col = laterals[c].GetCollider() as Node;
+                    if(col.GetParent() is npc){
+                        var me = col.GetParent() as npc;
+                        if(me.myType == npcType.talker)
+                        {
+                            targets.Add(me);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public bool CheckCollision(string direction)

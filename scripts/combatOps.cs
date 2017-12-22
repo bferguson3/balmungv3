@@ -141,19 +141,30 @@ public class combatOps : Node
     {
         g.inputMode = inputModes.combatMove;
         ground.DrawPlayerMoveZone();
-        g.inputMode = inputModes.combatMove;
+        //g.inputMode = inputModes.combatMove;
         gui.UpdateCombatFeedback("Moving.\nDestination?");
+    }
+
+    public void CancelPlayerMovement()
+    {
+        p.SetPosition(p.roundStartPos);
+        g.inputMode = inputModes.combatCommand;
+        ground.HidePlayerMoveZone();
+        gui.UpdateCombatFeedback("Command?\n ");
+        p.InitializeTurn();
     }
 
     public void EndPlayerMovement()
     {
-        ground.HidePlayerMoveZone();
-        g.inputMode = inputModes.noInput;
-        gui.UpdateCombatFeedback("");
-        gui.HideSelectionText();
-        p.actionWeight = 0;
-        p.turnTaken = true;
-        BeginNextTurn();
+        if(p.GetPosition() != p.roundStartPos){
+            ground.HidePlayerMoveZone();
+            g.inputMode = inputModes.noInput;
+            gui.UpdateCombatFeedback("");
+            gui.HideSelectionText();
+            p.actionWeight = 0;
+            p.turnTaken = true;
+            BeginNextTurn();
+        }
     }
     public override void _Ready()
     {   

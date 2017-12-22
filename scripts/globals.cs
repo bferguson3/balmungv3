@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public enum inputModes { noInput, moving, combatMove, combatCommand }
+public enum inputModes { noInput, moving, combatMove, combatCommand, oocMenuRoot, selectToTalk }
 public enum battlePositions { standard, reversed, rtl, ltr, hasami, ambushed }
 public enum actors {player, enemy}
 
@@ -26,6 +26,7 @@ public class globals : Node
         rightButton = "ui_right";
         downButton = "ui_down";
         aButton = "ui_accept";
+        bButton = "ui_cancel";
     }
 
 //    public override void _Process(float delta)
