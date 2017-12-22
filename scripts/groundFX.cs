@@ -3,8 +3,10 @@ using System;
 
 public class groundFX : Sprite
 {
-    bool drawingMoveArea;
-    player p;
+    private bool drawingMoveArea;
+
+    private player p;
+
     public override void _Ready()
     {
         p = GetNode("../playerSprite") as player;
@@ -35,18 +37,21 @@ public class groundFX : Sprite
             //-> Planning ahead further, create an optional seperate map for combat.
             //It can still be set up the same way, but there (+) is a tilemap that is
             //shown or hidden based on a random(int) and terrain type.
+
             Vector2 rPos;
-            Vector2 rSize = new Vector2(32, 32);
-            for (int r = -2; r < 3; r++)
+            var rSize = new Vector2(32, 32);
+
+            for (var r = -2; r < 3; r++)
             {
-                for (int q = -2; q < 3; q++)
+                for (var q = -2; q < 3; q++)
                 {
                     if (Mathf.Abs(r) + Mathf.Abs(q) < 3)
                     {
                         rPos = p.GetPosition();
                         rPos.x += (r * 32) - 16;
                         rPos.y += (q * 32) - 16;
-                        Rect2 newR = new Rect2(rPos, rSize);
+
+                        var newR = new Rect2(rPos, rSize);
                         DrawRect(newR, new Color(0, 1, 0, 0.33f));
                     }
                 }

@@ -8,35 +8,56 @@ public class npc : Sprite
 {
     [Export]
     public npcType myType;
+
     [Export]
     public aITypes aIType;
+
     public bool turnTaken;
+
     [Export]
     public string myName;
+
     [Export]
     public int ATK;
+
     [Export]
     public int DEF;
+
     [Export]
     public int DEX;
+
     [Export]
     public int EXP;
+
     [Export]
     public int HP;
+
     [Export]
     public int MP;
+
     [Export]
     public string droppedItem;// = new string[2];
+
     [Export]
     public int dropRate;
+
     [Export]
     public int droppedG;
-    public int actionWeight, moraleScore;
+
+    public int actionWeight;
+
+    public int moraleScore;
+
     public bool fleeing;
-    RayCast2D[] rays = new RayCast2D[8];
-    globals g;
-    combatOps c;
-    UI gui;
+
+    private RayCast2D[] rays = new RayCast2D[8];
+
+    private globals g;
+
+    private combatOps c;
+
+    private UI gui;
+
     private Timer newt = new Timer();
 
     public override void _Ready()
@@ -71,9 +92,15 @@ public class npc : Sprite
             if (rays[1].IsColliding())
             {
                 var col = rays[1].GetCollider() as Node;
-                if (col.GetParent() == this) { }
+
+                if (col.GetParent() == this)
+                {
+                    //do something?
+                }
                 else
+                {
                     return false;
+                }
             }
         }
         else if (dir == "left")
@@ -81,9 +108,15 @@ public class npc : Sprite
             if (rays[5].IsColliding())
             {
                 var col = rays[5].GetCollider() as Node;
-                if (col.GetParent() == this) { }
+
+                if (col.GetParent() == this)
+                {
+                    //do something?
+                }
                 else
+                {
                     return false;
+                }
             }
         }
         else if (dir == "up")
@@ -91,9 +124,15 @@ public class npc : Sprite
             if (rays[3].IsColliding())
             {
                 var col = rays[3].GetCollider() as Node;
-                if (col.GetParent() == this) { }
+
+                if (col.GetParent() == this)
+                {
+                    //do something?
+                }
                 else
+                {
                     return false;
+                }
             }
         }
         else if (dir == "down")
@@ -101,9 +140,15 @@ public class npc : Sprite
             if (rays[7].IsColliding())
             {
                 var col = rays[7].GetCollider() as Node;
-                if (col.GetParent() == this) { }
+
+                if (col.GetParent() == this)
+                {
+                    //do something?
+                }
                 else
+                {
                     return false;
+                }
             }
         }
         return true;
@@ -111,10 +156,11 @@ public class npc : Sprite
 
     public void MoveToClosestPC()
     {
-        float nearestDist = 999999999f;
-        Sprite nearest = g.combatants[0];
-        Vector2 xyDist = new Vector2(0, 0);
-        foreach (Sprite cbt in g.combatants)
+        var nearestDist = 999999999f;
+        var nearest = g.combatants[0];
+        var xyDist = new Vector2(0, 0);
+
+        foreach (var cbt in g.combatants)
         {
             if ((GetPosition().DistanceSquaredTo(cbt.GetPosition()) <= nearestDist) && this != cbt)
             {
@@ -172,7 +218,7 @@ public class npc : Sprite
 
     private void InitializeRays()
     {
-        for (int a = 1; a <= 8; a++)
+        for (var a = 1; a <= 8; a++)
         {
             rays[a - 1] = GetNode("npcRay" + a.ToString()) as RayCast2D;
             rays[a - 1].RotationDegrees = (a * 45);
@@ -182,13 +228,16 @@ public class npc : Sprite
 
     public bool CheckAdjacentToPC()
     {
-        for (int r = 0; r < rays.Length; r++)
+        for (var r = 0; r < rays.Length; r++)
         {
             if (rays[r].IsColliding())
             {
                 var col = rays[r].GetCollider() as Node;
                 //GD.Print(col);
-                if (col.GetParent() == this) { }
+                if (col.GetParent() == this)
+                {
+                    //do something?
+                }
                 else
                 {
                     if (g.combatants.Contains(col.GetParent() as Sprite))

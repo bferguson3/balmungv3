@@ -3,11 +3,16 @@ using System;
 
 public class combatOps : Node
 {
-    public Timer combatWaitTimer;
-    UI gui;
-    player p;
-    globals g;
-    groundFX ground;
+    public Timer combatWaitTimer { get; set; }
+
+    private UI gui;
+
+    private player p;
+
+    private globals g;
+
+    private groundFX ground;
+
     public void SetBattlePositions(battlePositions bpos, player pl, npc np)
     {
         if (bpos == battlePositions.standard)
@@ -23,6 +28,7 @@ public class combatOps : Node
         //TODO: make this better
         g.combatants.Add(collidingWith);
         g.combatants.Add(p);
+
         foreach (Node n in g.combatants)
         {
             if (n is player)
@@ -55,13 +61,15 @@ public class combatOps : Node
         //Determine initiative via DEX
         //TODO: Fix this mess
         //GD.Print("Finding next highest speed who hasn't acted...");
-        int highDex = 0;
+        var highDex = 0;
         Node nextActor = g;
+
         foreach (Node n in g.combatants)
         {
             if (n is player)
             {
                 var me = n as player;
+
                 if (me.DEX - me.actionWeight >= highDex && !me.turnTaken)
                 { //if my DEX is greater than or equal to last
                     highDex = me.DEX;
@@ -72,6 +80,7 @@ public class combatOps : Node
             else if (n is npc)
             {
                 var me = n as npc;
+
                 if (me.DEX - me.actionWeight > highDex && !me.turnTaken)
                 {
                     highDex = me.DEX;
@@ -80,11 +89,14 @@ public class combatOps : Node
                 //NPC
             }
         }
+
         GD.Print("Next Turn: " + nextActor.GetName());
+
         if (nextActor is player)
         {
             var me = nextActor as player;
-            string f = me.myName;
+            var f = me.myName;
+
             gui.UpdateCombatFeedback(f + "'s turn. \nCommand?");
             me.InitializeTurn();
             gui.InitializePlayerMenu();
@@ -93,7 +105,8 @@ public class combatOps : Node
         else if (nextActor is npc)
         {
             var me = nextActor as npc;
-            string f = me.myName;
+            var f = me.myName;
+
             gui.UpdateCombatFeedback(f + "'s turn...\n ");
             me.turnTaken = true;
             //ENUM TYPE: MELEE, RANGED MONSTER.
@@ -134,6 +147,7 @@ public class combatOps : Node
         else if (nextActor is globals)
         {
             GD.Print("resetting turn");
+
             foreach (Node j in g.combatants)
             {
                 if (j is player)
@@ -147,10 +161,10 @@ public class combatOps : Node
                     me.turnTaken = false;
                 }
             }
+
             BeginNextTurn();
             return;
         }
-
     }
 
     public void StartPlayerMovement()
@@ -183,6 +197,7 @@ public class combatOps : Node
             BeginNextTurn();
         }
     }
+
     public override void _Ready()
     {
         gui = GetNode("../UI") as UI;

@@ -9,14 +9,17 @@ public enum actors { player, enemy }
 public class globals : Node
 {
     public bool acceptPressed, cancelPressed, leftPressed, rightPressed, upPressed, downPressed;
+
     public bool acceptReleased = true, cancelReleased = true, leftReleased = true, rightReleased = true, upReleased = true, downReleased = true;
 
     public string upButton, leftButton, rightButton, downButton, aButton, bButton;
+
     public inputModes inputMode;
 
     public bool playerBlockedDown, playerBlockedUp, playerBlockedLeft, playerBlockedRight;
 
     public bool inCombat;
+
     public List<Sprite> combatants = new List<Sprite>();// combatants;
 
     public override void _Ready()
@@ -35,6 +38,4 @@ public class globals : Node
     //        // Update game logic here.
     //        
     //    }
-
-
 }

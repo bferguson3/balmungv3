@@ -3,29 +3,43 @@ using System;
 
 public class UI : Sprite
 {
-    bool combatTransitionStart;
-    Rect2 frame, blackSquare;
-    Camera2D cam;
-    Timer fadeTicker;//, combatWaitTimer;
-    int fadeLoop = 0, oocSelNo, mapSelNo;
-    int rectSize = 92;
-    bool[,] fadeRects = new bool[22, 22];
-    Vector2 upLeft, bsqPos;
+    private bool combatTransitionStart;
+
+    private Rect2 frame, blackSquare;
+
+    private Camera2D cam;
+
+    private Timer fadeTicker;//, combatWaitTimer;
+
+    private int fadeLoop = 0, oocSelNo, mapSelNo;
+
+    private int rectSize = 92;
+
+    private bool[,] fadeRects = new bool[22, 22];
+
+    private Vector2 upLeft, bsqPos;
+
     public npc collidingWith;
-    player p;
-    globals g;
-    Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin, mapSel;
-    combatOps c;
-    Label statLbl, menuLbl, feedbackLbl, oocTxt;
+
+    private player p;
+
+    private globals g;
+
+    private Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin, mapSel;
+
+    private combatOps c;
+
+    private Label statLbl, menuLbl, feedbackLbl, oocTxt;
+
     private int combatSelNo;
 
     public override void _Draw()
     {
         if (combatTransitionStart)
         {
-            for (int j = 0; j < fadeLoop; j++)
+            for (var j = 0; j < fadeLoop; j++)
             {
-                for (int k = 0; k < fadeLoop; k++)
+                for (var k = 0; k < fadeLoop; k++)
                 {
                     if (fadeRects[j, k] == true)
                     {
@@ -42,8 +56,10 @@ public class UI : Sprite
     public void StartFadeOut()
     {
         frame = cam.GetViewportRect();
-        float leftBound = frame.Position.x - (frame.Size.x / 1.5f);
-        float upBound = frame.Position.y - (frame.Size.y / 1.5f);
+
+        var leftBound = frame.Position.x - (frame.Size.x / 1.5f);
+        var upBound = frame.Position.y - (frame.Size.y / 1.5f);
+
         upLeft = frame.Position;
         upLeft.x = leftBound;
         upLeft.y = upBound;
@@ -58,7 +74,6 @@ public class UI : Sprite
 
         SetPosition(p.GetPosition() + new Vector2(-64, 0));
         //Show();
-
     }
 
     public void OpenOOCMenu()
@@ -81,24 +96,30 @@ public class UI : Sprite
     {
         SetPosition(collidingWith.GetPosition() + new Vector2(120, 40));
         cam.Current = false;
-        Camera2D battleCam = GetNode("combatUI/battleCam") as Camera2D;
+
+        var battleCam = GetNode("combatUI/battleCam") as Camera2D;
         battleCam.Current = true;
+
         //TODO: Finish this animation
         c.SetupCombat(collidingWith);
     }
 
     public void FadeTick()
     {
-        for (int n = 0; n < fadeLoop; n++)
+        for (var n = 0; n < fadeLoop; n++)
         {
-            for (int c = fadeLoop; c >= 0; c--)
+            for (var c = fadeLoop; c >= 0; c--)
             {
                 if (n + c <= fadeLoop)
+                {
                     fadeRects[n, c] = true;
+                }
             }
         }
+
         fadeLoop++;
         Update();
+
         if (fadeLoop > 21)
         {
             fadeLoop = 0;
@@ -267,14 +288,17 @@ public class UI : Sprite
         {
             mapSelNo--;
         }
+
         if (mapSelNo < 0)
         {
             mapSelNo = p.targets.Count - 1;
         }
+
         if (mapSelNo > p.targets.Count - 1)
         {
             mapSelNo = 0;
         }
+
         MapSelect(p.targets[mapSelNo] as Sprite);
     }
 }
