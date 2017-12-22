@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class player : Sprite
 {
-[Export]
+    [Export]
     public string myName;
 
     [Export]

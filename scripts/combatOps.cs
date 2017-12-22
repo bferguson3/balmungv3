@@ -55,6 +55,7 @@ public class combatOps : Node
         combatWaitTimer.OneShot = true;
         combatWaitTimer.Start();
     }
+    
     public void BeginNextTurn()
     {
         //Iterate through combatants
