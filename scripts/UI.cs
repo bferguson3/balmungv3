@@ -3,6 +3,8 @@ using System;
 
 public class UI : Sprite
 {
+    public npc collidingWith;
+
     private bool combatTransitionStart;
 
     private Rect2 frame, blackSquare;
@@ -18,8 +20,6 @@ public class UI : Sprite
     private bool[,] fadeRects = new bool[22, 22];
 
     private Vector2 upLeft, bsqPos;
-
-    public npc collidingWith;
 
     private player p;
 

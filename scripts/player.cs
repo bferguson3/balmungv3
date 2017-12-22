@@ -4,23 +4,7 @@ using System.Collections.Generic;
 
 public class player : Sprite
 {
-    private Vector2 mypos;
-
-    public Vector2 roundStartPos;
-
-    public bool turnTaken;
-
-    private globals g;
-
-    private UI gui;
-
-    private int udMove;
-    
-    private int lrMove;
-    
-    private int moveRange;
-
-    [Export]
+[Export]
     public string myName;
 
     [Export]
@@ -54,11 +38,27 @@ public class player : Sprite
 
     public int actionWeight;
 
+    public Vector2 roundStartPos;
+
+    public bool turnTaken;
+
+    public List<Node> targets = new List<Node>();
+
+    private Vector2 mypos;
+
+    private globals g;
+
+    private UI gui;
+
+    private int udMove;
+    
+    private int lrMove;
+    
+    private int moveRange;
+
     private RayCast2D[] diagonals = new RayCast2D[4];
 
     private RayCast2D[] laterals = new RayCast2D[4];
-    
-    public List<Node> targets = new List<Node>();
 
     public override void _Ready()
     {
