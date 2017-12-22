@@ -7,14 +7,14 @@ public class UI : Sprite
     Rect2 frame, blackSquare;
     Camera2D cam;
     Timer fadeTicker;//, combatWaitTimer;
-    int fadeLoop = 0, oocSelNo;
+    int fadeLoop = 0, oocSelNo, mapSelNo;
     int rectSize = 92;
     bool[,] fadeRects = new bool[22,22];
     Vector2 upLeft, bsqPos;
     public npc collidingWith;
     player p;
     globals g;
-    Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin;
+    Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin, mapSel;
     combatOps c;
     Label statLbl, menuLbl, feedbackLbl, oocTxt;
     private int combatSelNo;
@@ -191,6 +191,12 @@ public class UI : Sprite
         feedbackLbl.Text = update;
     }
     
+    public void MapSelect(Sprite target)
+    {
+        mapSel.Show();
+        mapSel.SetGlobalPosition(target.GetGlobalPosition());
+    }
+
     public override void _Ready()
     {
         Show();
@@ -203,6 +209,7 @@ public class UI : Sprite
         oocSel = GetNode("oocMenu/oocSel") as Sprite;
         oocTxt = GetNode("oocMenu/menuTxt") as Label;
         dialogueWin = GetNode("dialogueWin") as Sprite;
+        mapSel = GetNode("mapSelector") as Sprite;
 
         combatUI = GetNode("combatUI") as Sprite;
         combatSel = GetNode("combatUI/selector") as Sprite;
@@ -220,8 +227,34 @@ public class UI : Sprite
         this.AddChild(fadeTicker);
     }
 
+    public void HideMapSelector()
+    {
+        mapSel.Hide();
+    }
+
    public override void _Process(float delta)
     {
         
+    }
+
+    public void StartConversation()
+    {
+
+    }
+
+    public void SelectNextOnMap(bool backwards){
+        if(!backwards){
+            mapSelNo++;
+        }
+        else{
+            mapSelNo--;
+        }
+        if(mapSelNo < 0){
+            mapSelNo = p.targets.Count - 1;
+        }
+        if(mapSelNo > p.targets.Count - 1){
+            mapSelNo = 0;
+        }
+        MapSelect(p.targets[mapSelNo] as Sprite);
     }
 }

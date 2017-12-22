@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/UI.cs" type="Script" id=1]
 [ext_resource path="res://battle-gui-windows.png" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://selector.png" type="Texture" id=4]
 [ext_resource path="res://scenes/convo-gui-windows.png" type="Texture" id=5]
 [ext_resource path="res://resources/oocmenu-windows.png" type="Texture" id=6]
+[ext_resource path="res://mapselector.png" type="Texture" id=7]
+[ext_resource path="res://scripts/mapSelector_effect.cs" type="Script" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -194,6 +196,7 @@ max_lines_visible = -1
 
 [node name="oocMenu" type="Sprite" parent="."]
 
+editor/display_folded = true
 position = Vector2( 6.66666, 0 )
 scale = Vector2( 2.21264, 2.12963 )
 texture = ExtResource( 6 )
@@ -232,5 +235,13 @@ max_lines_visible = -1
 position = Vector2( -204.281, -97.0433 )
 scale = Vector2( 0.658684, 0.684837 )
 texture = ExtResource( 4 )
+
+[node name="mapSelector" type="Sprite" parent="."]
+
+visible = false
+modulate = Color( 1, 1, 1, 0.480667 )
+scale = Vector2( 0.75, 0.75 )
+texture = ExtResource( 7 )
+script = ExtResource( 8 )
 
 

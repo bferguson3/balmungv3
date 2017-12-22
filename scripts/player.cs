@@ -8,6 +8,7 @@ public class player : Sprite
     public Vector2 roundStartPos;
     public bool turnTaken;
     globals g;
+    UI gui;
     private int udMove, lrMove, moveRange;
 	
     [Export]
@@ -35,11 +36,12 @@ public class player : Sprite
     public int actionWeight;
     RayCast2D[] diagonals = new RayCast2D[4];
     RayCast2D[] laterals = new RayCast2D[4];
-    List<Node> targets = new List<Node>();
+    public List<Node> targets = new List<Node>();
 
     public override void _Ready()
     {
         g = GetNode("/root/globals") as globals;
+        gui = GetNode("../UI") as UI;
         for(int c = 1; c <= 4; c++){
             diagonals[c-1] = GetNode("diagonal" + c.ToString()) as RayCast2D;
             diagonals[c-1].SetRotationDegrees(((c*2)-1)*45f);
@@ -62,8 +64,11 @@ public class player : Sprite
         targets.Clear();
         FindCollidingTargets();
         //
-        foreach(var m in targets)
-            GD.Print(m);
+        if(targets.Count > 0)
+            gui.MapSelect(targets[0] as Sprite);
+        else{
+            g.inputMode = inputModes.moving;
+        }
         //
     }
 

@@ -81,6 +81,21 @@ public class inputManager : Node
                 g.inputMode = inputModes.moving;
             }
         }
+        else if(g.inputMode == inputModes.selectToTalk){
+            if(key == g.bButton){
+                gui.HideMapSelector();
+                g.inputMode = inputModes.moving;
+            }
+            else if(key == g.aButton){
+                gui.StartConversation();
+            }
+            else if(key == g.rightButton || key == g.upButton){
+                gui.SelectNextOnMap(false);
+            }
+            else if(key == g.leftButton || key == g.downButton){
+                gui.SelectNextOnMap(true);
+            }
+        }
     }
 
     void FirstDepress(string key)
