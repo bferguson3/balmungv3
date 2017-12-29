@@ -3,12 +3,17 @@ using System;
 
 public class playerRay : RayCast2D
 {
-    globals g;
-    player p;
-    UI ui;
-    Camera2D cam;
-    npc collidingWith;
-    bool drawingFadeOut;
+    private globals g;
+
+    private player p;
+
+    private UI ui;
+
+    private Camera2D cam;
+
+    private npc collidingWith;
+
+    private bool drawingFadeOut;
 
     public override void _Ready()
     {
@@ -18,15 +23,20 @@ public class playerRay : RayCast2D
         p = GetParent() as player;
         AddException(GetNode("../Area2D"));
     }
-    
+
     private void CheckCombat(Node col)
     {
         collidingWith = col.GetParent() as npc;
-        if(collidingWith == null)
+
+        if (collidingWith == null)
+        {
             return;
-        
+        }
+
         ui.collidingWith = collidingWith;
-        if(ui.collidingWith.myType == npcType.enemy){
+
+        if (ui.collidingWith.myType == npcType.enemy)
+        {
             //TODO: Move elsewhere?
             g.inCombat = true;
             g.inputMode = inputModes.noInput;
@@ -41,9 +51,15 @@ public class playerRay : RayCast2D
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+
+                if (GetParent() == col.GetParent())
+                {
+                    //do something?
+                }
+                else
+                {
+                    if (!g.inCombat)
+                    {
                         CheckCombat(col);
                     if(col.GetName() == "combatFleeZone")
                     {}//g.tryToFlee = true;}
@@ -54,16 +70,24 @@ public class playerRay : RayCast2D
                 }
             }
             else
+            {
                 g.playerBlockedDown = false;
+            }
         }
         else if (GetName() == "playerRayUp")
         {
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+
+                if (GetParent() == col.GetParent())
+                {
+                    //do something?
+                }
+                else
+                {
+                    if (!g.inCombat)
+                    {
                         CheckCombat(col);
                     if(col.GetName() == "combatFleeZone")
                     {}//g.tryToFlee = true;}
@@ -74,16 +98,24 @@ public class playerRay : RayCast2D
                 }
             }
             else
+            {
                 g.playerBlockedUp = false;
+            }
         }
         else if (GetName() == "playerRayLeft")
         {
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+
+                if (GetParent() == col.GetParent())
+                {
+                    //do something?
+                }
+                else
+                {
+                    if (!g.inCombat)
+                    {
                         CheckCombat(col);
                     if(col.GetName() == "combatFleeZone")
                     {}//g.tryToFlee = true;}
@@ -94,16 +126,24 @@ public class playerRay : RayCast2D
                 }
             }
             else
+            {
                 g.playerBlockedLeft = false;
+
         }
-        else if(GetName() == "playerRayRight")
+        else if (GetName() == "playerRayRight")
         {
             if (IsColliding())
             {
                 var col = GetCollider() as Node;
-                if(GetParent() == col.GetParent()){}
-                else{
-                    if(!g.inCombat)
+
+                if (GetParent() == col.GetParent())
+                {
+                    //do something?
+                }
+                else
+                {
+                    if (!g.inCombat)
+                    {
                         CheckCombat(col);
                     if(col.GetName() == "combatFleeZone")
                     {}//g.tryToFlee = true;}
@@ -114,7 +154,9 @@ public class playerRay : RayCast2D
                 }
             }
             else
+            {
                 g.playerBlockedRight = false;
+            }
         }
     }
 }
