@@ -1,0 +1,17 @@
+[remap]
+
+importer="org.vnen.tiled_importer"
+type="PackedScene"
+path="res://.import/battle-town1.json-2f79a5fbf3044fb41a6420e6e1243d8c.scn"
+
+[deps]
+
+source_md5="365f41791c577bbd61c345d091247c9c"
+
+[params]
+
+post_script=""
+custom_properties=true
+bundle_tilesets=false
+save_tilesets=true
+tileset_directory="res://.import/tilesets/"

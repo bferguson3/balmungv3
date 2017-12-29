@@ -45,7 +45,12 @@ public class playerRay : RayCast2D
                 else{
                     if(!g.inCombat)
                         CheckCombat(col);
-                    g.playerBlockedDown = true;
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                    //    g.tryToFlee = false;
+                        g.playerBlockedDown = true;
+                    }
                 }
             }
             else
@@ -60,7 +65,12 @@ public class playerRay : RayCast2D
                 else{
                     if(!g.inCombat)
                         CheckCombat(col);
-                    g.playerBlockedUp = true;
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                     //   g.tryToFlee = false;
+                        g.playerBlockedUp = true;
+                    }
                 }
             }
             else
@@ -75,12 +85,16 @@ public class playerRay : RayCast2D
                 else{
                     if(!g.inCombat)
                         CheckCombat(col);
-                    g.playerBlockedLeft = true;
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                    //    g.tryToFlee = false;
+                        g.playerBlockedLeft = true;
+                    }
                 }
             }
             else
                 g.playerBlockedLeft = false;
-
         }
         else if(GetName() == "playerRayRight")
         {
@@ -91,7 +105,12 @@ public class playerRay : RayCast2D
                 else{
                     if(!g.inCombat)
                         CheckCombat(col);
-                    g.playerBlockedRight = true;
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                    //    g.tryToFlee = false;
+                        g.playerBlockedRight = true;
+                    }
                 }
             }
             else

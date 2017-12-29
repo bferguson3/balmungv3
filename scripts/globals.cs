@@ -16,7 +16,7 @@ public class globals : Node
 
     public bool playerBlockedDown, playerBlockedUp, playerBlockedLeft, playerBlockedRight;
 
-    public bool inCombat;
+    public bool inCombat;//, tryToFlee;
     public List<Sprite> combatants = new List<Sprite>();// combatants;
 
     public override void _Ready()

@@ -8,19 +8,24 @@ public class combatOps : Node
     player p;
     globals g;
     groundFX ground;
+    Node battlemap;
     public void SetBattlePositions(battlePositions bpos, player pl, npc np)
     {
         if(bpos == battlePositions.standard)
         {
             //TODO
             //Properly position player and enemies. Atm splits +3/-3 squares.
-            pl.SetPosition(np.GetPosition() + new Vector2(0, 98));
-            np.SetPosition(np.GetPosition() + new Vector2(0, -98));
+            var p1pos = battlemap.GetNode("p1_combat_start") as Node2D;
+            var e1pos = battlemap.GetNode("enemy_combat_start") as Node2D;
+            pl.SetPosition(p1pos.GetGlobalPosition());
+            np.SetPosition(e1pos.GetGlobalPosition());
         }
     }
     public void SetupCombat(npc collidingWith)
     {
             //TODO: make this better
+            //TODO: figure out good way to determine battle background type
+            battlemap = GetNode("../battlemap");
             g.combatants.Add(collidingWith);
             g.combatants.Add(p);
             foreach(Node n in g.combatants){

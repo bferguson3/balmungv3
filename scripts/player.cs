@@ -72,27 +72,72 @@ public class player : Sprite
         //
     }
 
+    public bool FleeingDirection(string key)
+    {
+        //Am I moving towards an ESCAPE ROUTE according to the movement
+        //key pressed?
+        //DULR 0123
+        if(key == g.downButton){
+            if(laterals[0].IsColliding()){
+                var hit = laterals[0].GetCollider() as Node; 
+                if(hit.GetName() == "combatFleeZone"){
+                    return true;
+                }
+                GD.Print("flee down" + hit.GetName());
+            }
+        }
+        if(key == g.upButton){
+            if(laterals[1].IsColliding()){
+                var hit = laterals[1].GetCollider() as Node; 
+                if(hit.GetName() == "combatFleeZone"){
+                    return true;
+                }
+                GD.Print("flee up" + hit.GetName());
+            }
+        }
+        if(key == g.leftButton){
+            if(laterals[2].IsColliding()){
+                var hit = laterals[2].GetCollider() as Node; 
+                if(hit.GetName() == "combatFleeZone"){
+                    return true;
+                }
+                GD.Print("flee left" + hit.GetName());
+            }
+        }
+        if(key == g.rightButton){
+            if(laterals[3].IsColliding()){
+                var hit = laterals[3].GetCollider() as Node; 
+                if(hit.GetName() == "combatFleeZone"){
+                    return true;
+                }
+                GD.Print("flee right" + hit.GetName());
+            }
+        }
+
+        return false;
+    }
+
     private void FindCollidingTargets()
     {
         if(g.inputMode == inputModes.selectToTalk){
             for(int c = 0; c < 4; c++){
-                if(diagonals[c].IsColliding()){
-                    var col = diagonals[c].GetCollider() as Node;
-                    if(col.GetParent() is npc){
-                        var me = col.GetParent() as npc;
-                        if(me.myType == npcType.talker){
-                            //Do I talk?
-                            //Yes, so I can return myself as a GOOD target for selectToTalk
-                            targets.Add(me);
-                        }
-                    }
-                }
                 if(laterals[c].IsColliding()){
                     var col = laterals[c].GetCollider() as Node;
                     if(col.GetParent() is npc){
                         var me = col.GetParent() as npc;
                         if(me.myType == npcType.talker)
                         {
+                            targets.Add(me);
+                        }
+                    }
+                }
+            }
+            for(int c = 0; c < 4; c++){
+                if(diagonals[c].IsColliding()){
+                    var col = diagonals[c].GetCollider() as Node;
+                    if(col.GetParent() is npc){
+                        var me = col.GetParent() as npc;
+                        if(me.myType == npcType.talker){
                             targets.Add(me);
                         }
                     }

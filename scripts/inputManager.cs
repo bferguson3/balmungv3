@@ -55,7 +55,10 @@ public class inputManager : Node
             }
             else{
                 if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
-                    p.MoveThisSprite(key);
+                    if(!p.FleeingDirection(key))
+                        p.MoveThisSprite(key);
+                    else
+                        gui.UpdateCombatFeedback("Can't escape yet!");
                 }
             }
         }
