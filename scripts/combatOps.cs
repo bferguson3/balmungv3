@@ -3,6 +3,7 @@ using System;
 
 public class combatOps : Node
 {
+
     public Timer combatWaitTimer { get; set; }
 
     private UI gui;
@@ -12,40 +13,45 @@ public class combatOps : Node
     private globals g;
 
     private groundFX ground;
+    
+    Node battlemap;
 
-    public void SetBattlePositions(battlePositions bpos, player pl, npc np)
+
+ public void SetBattlePositions(battlePositions bpos, player pl, npc np)
     {
         if (bpos == battlePositions.standard)
         {
             //TODO
             //Properly position player and enemies. Atm splits +3/-3 squares.
-            pl.SetPosition(np.GetPosition() + new Vector2(0, 98));
-            np.SetPosition(np.GetPosition() + new Vector2(0, -98));
+            var p1pos = battlemap.GetNode("p1_combat_start") as Node2D;
+            var e1pos = battlemap.GetNode("enemy_combat_start") as Node2D;
+            pl.SetPosition(p1pos.GetGlobalPosition());
+            np.SetPosition(e1pos.GetGlobalPosition());
         }
     }
     public void SetupCombat(npc collidingWith)
     {
-        //TODO: make this better
-        g.combatants.Add(collidingWith);
-        g.combatants.Add(p);
 
-        foreach (Node n in g.combatants)
-        {
-            if (n is player)
-            {
-                //player
-                var me = n as player;
-                me.actionWeight = 0;
-                me.turnTaken = false;
-            }
-            else if (n is npc)
-            {
+            //TODO: make this better
+            //TODO: figure out good way to determine battle background type
+            battlemap = GetNode("../battlemap");
+            g.combatants.Add(collidingWith);
+            g.combatants.Add(p);
+            foreach(Node n in g.combatants){
+                if(n is player){
+                    //player
+                    var me = n as player;
+                    me.actionWeight = 0;
+                    me.turnTaken = false;
+                }
+                else if (n is npc)
+               {
                 //NPC
-                var me = n as npc;
-                me.actionWeight = 0;
-                me.turnTaken = false;
+                   var me = n as npc;
+                   me.actionWeight = 0;
+                   me.turnTaken = false;
+               }
             }
-        }
 
         SetBattlePositions(battlePositions.standard, p, collidingWith);
         gui.InitializeCombatUI();

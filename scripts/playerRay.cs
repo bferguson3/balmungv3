@@ -61,9 +61,12 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                    //    g.tryToFlee = false;
+                        g.playerBlockedDown = true;
                     }
-
-                    g.playerBlockedDown = true;
                 }
             }
             else
@@ -86,9 +89,12 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                     //   g.tryToFlee = false;
+                        g.playerBlockedUp = true;
                     }
-
-                    g.playerBlockedUp = true;
                 }
             }
             else
@@ -111,15 +117,18 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                    //    g.tryToFlee = false;
+                        g.playerBlockedLeft = true;
                     }
-
-                    g.playerBlockedLeft = true;
                 }
             }
             else
             {
                 g.playerBlockedLeft = false;
-            }
+
         }
         else if (GetName() == "playerRayRight")
         {
@@ -136,9 +145,12 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
+                    if(col.GetName() == "combatFleeZone")
+                    {}//g.tryToFlee = true;}
+                    else{
+                    //    g.tryToFlee = false;
+                        g.playerBlockedRight = true;
                     }
-
-                    g.playerBlockedRight = true;
                 }
             }
             else

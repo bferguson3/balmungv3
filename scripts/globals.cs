@@ -35,7 +35,11 @@ public class globals : Node
 
     public inputModes inputMode;
 
-    public List<Sprite> combatants = new List<Sprite>();
+
+    public bool playerBlockedDown, playerBlockedUp, playerBlockedLeft, playerBlockedRight;
+
+    public bool inCombat;//, tryToFlee;
+    public List<Sprite> combatants = new List<Sprite>();// combatants;
 
     public override void _Ready()
     {

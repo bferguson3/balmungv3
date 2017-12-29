@@ -68,11 +68,14 @@ public class inputManager : Node
             {
                 c.CancelPlayerMovement();
             }
-            else
-            {
-                if (p.CheckCollision(key) && p.CheckMoveBoundary(key))
-                {
-                    p.MoveThisSprite(key);
+
+            else{
+                if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
+                    if(!p.FleeingDirection(key))
+                        p.MoveThisSprite(key);
+                    else
+                        gui.UpdateCombatFeedback("Can't escape yet!");
+
                 }
             }
         }

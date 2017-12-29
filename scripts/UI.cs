@@ -94,7 +94,10 @@ public class UI : Sprite
 
     public void StartFadeIn()
     {
-        SetPosition(collidingWith.GetPosition() + new Vector2(120, 40));
+        //SetPosition(collidingWith.GetPosition() + new Vector2(120, 40));
+        //SET MY POSITION TO BATTLEMAP
+        var gpos = GetNode("../battlemap/gui_combat_pos") as Node2D;
+        SetPosition(gpos.GetGlobalPosition());
         cam.Current = false;
 
         var battleCam = GetNode("combatUI/battleCam") as Camera2D;
