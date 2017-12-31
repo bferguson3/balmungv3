@@ -44,14 +44,14 @@ font_data = ExtResource( 3 )
 scale = Vector2( 0.75, 0.75 )
 script = ExtResource( 1 )
 
-[node name="combatUI" type="Sprite" parent="."]
+[node name="combatUI" type="Sprite" parent="." index="0"]
 
 editor/display_folded = true
 position = Vector2( -7.62939e-06, 2.19345e-05 )
 scale = Vector2( 1.00575, 1.01852 )
 texture = ExtResource( 2 )
 
-[node name="charStats" type="Label" parent="combatUI"]
+[node name="charStats" type="Label" parent="combatUI" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -63,7 +63,6 @@ margin_right = 330.702
 margin_bottom = -82.9087
 rect_scale = Vector2( 2, 2 )
 rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
 size_flags_horizontal = 1
 size_flags_vertical = 4
@@ -87,7 +86,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="menuSelTxt" type="Label" parent="combatUI"]
+[node name="menuSelTxt" type="Label" parent="combatUI" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -99,7 +98,6 @@ margin_right = 354.628
 margin_bottom = 211.327
 rect_scale = Vector2( 2, 2 )
 rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
 size_flags_horizontal = 1
 size_flags_vertical = 4
@@ -111,7 +109,7 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="feedbackTxt" type="Label" parent="combatUI"]
+[node name="feedbackTxt" type="Label" parent="combatUI" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -123,7 +121,6 @@ margin_right = -264.485
 margin_bottom = 224.091
 rect_scale = Vector2( 2, 2 )
 rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
 size_flags_horizontal = 1
 size_flags_vertical = 4
@@ -135,14 +132,14 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="selector" type="Sprite" parent="combatUI"]
+[node name="selector" type="Sprite" parent="combatUI" index="3"]
 
 visible = false
 position = Vector2( 229.933, 174.681 )
 scale = Vector2( 1.4491, 1.43193 )
 texture = ExtResource( 4 )
 
-[node name="battleCam" type="Camera2D" parent="combatUI"]
+[node name="battleCam" type="Camera2D" parent="combatUI" index="4"]
 
 anchor_mode = 1
 rotating = false
@@ -165,14 +162,13 @@ editor_draw_screen = true
 editor_draw_limits = false
 editor_draw_drag_margin = false
 
-[node name="dialogueWin" type="Sprite" parent="."]
+[node name="dialogueWin" type="Sprite" parent="." index="1"]
 
-editor/display_folded = true
 position = Vector2( 0, 6.66666 )
 scale = Vector2( 2.18391, 2.08333 )
 texture = ExtResource( 5 )
 
-[node name="dialogueTxt" type="Label" parent="dialogueWin"]
+[node name="dialogueTxt" type="Label" parent="dialogueWin" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -183,7 +179,6 @@ margin_top = 61.0
 margin_right = 177.0
 margin_bottom = 138.0
 rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
 size_flags_horizontal = 1
 size_flags_vertical = 4
@@ -194,14 +189,14 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="oocMenu" type="Sprite" parent="."]
+[node name="oocMenu" type="Sprite" parent="." index="2"]
 
 editor/display_folded = true
 position = Vector2( 6.66666, 0 )
 scale = Vector2( 2.21264, 2.12963 )
 texture = ExtResource( 6 )
 
-[node name="menuTxt" type="Label" parent="oocMenu"]
+[node name="menuTxt" type="Label" parent="oocMenu" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -212,7 +207,6 @@ margin_top = -122.0
 margin_right = -130.0
 margin_bottom = 46.0
 rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
 mouse_filter = 2
 size_flags_horizontal = 1
 size_flags_vertical = 4
@@ -230,13 +224,13 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="oocSel" type="Sprite" parent="oocMenu"]
+[node name="oocSel" type="Sprite" parent="oocMenu" index="1"]
 
 position = Vector2( -204.281, -97.0433 )
 scale = Vector2( 0.658684, 0.684837 )
 texture = ExtResource( 4 )
 
-[node name="mapSelector" type="Sprite" parent="."]
+[node name="mapSelector" type="Sprite" parent="." index="3"]
 
 visible = false
 modulate = Color( 1, 1, 1, 0.480667 )

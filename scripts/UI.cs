@@ -1,5 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 public class UI : Sprite
 {
@@ -16,8 +19,9 @@ public class UI : Sprite
     globals g;
     Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin, mapSel;
     combatOps c;
-    Label statLbl, menuLbl, feedbackLbl, oocTxt;
+    Label statLbl, menuLbl, feedbackLbl, oocTxt, dialogueTxt;
     private int combatSelNo;
+    npc currentSpeaker;
 
     public override void _Draw(){
        if(combatTransitionStart){
@@ -212,6 +216,7 @@ public class UI : Sprite
         oocSel = GetNode("oocMenu/oocSel") as Sprite;
         oocTxt = GetNode("oocMenu/menuTxt") as Label;
         dialogueWin = GetNode("dialogueWin") as Sprite;
+        dialogueTxt = GetNode("dialogueWin/dialogueTxt") as Label;
         mapSel = GetNode("mapSelector") as Sprite;
 
         combatUI = GetNode("combatUI") as Sprite;
@@ -242,7 +247,45 @@ public class UI : Sprite
 
     public void StartConversation()
     {
+        HideMapSelector();
+        //set input mode = ConvoListen
+        //set input mode >>> ConvoSpeak
+        g.inputMode = inputModes.convoListen;
+        currentSpeaker = p.targets[mapSelNo] as npc;
+        dialogueWin.Show();
+        string[] scrip = System.IO.File.ReadAllLines("./scripts/dialogue.db");
+        bool npcfound = false;
+        for(int c = 0; c < scrip.Length; c++){
+            if(scrip[c].Contains("NPC")){
+                npcfound = true;
+                string npcname = scrip[c].substr(scrip[c].IndexOf(':')+1,scrip[c].Length-scrip[c].IndexOf(':')-1);
+                GD.Print(npcname + "|" + currentSpeaker.myName);
+                if(npcname == currentSpeaker.myName){
+                    GD.Print("speaker dialogue found.");
+                }    
+            }
+            if(scrip[c].to_lower().Contains("*firstmeet") && npcfound){
+                dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
+                return;
+            }
+        }
+    
+        
+        //display GLOBAL KEYWORDS
+        //load secret switch keywords
+        //display hail, or firstmeet if never met before
+        ///readline until "" is found
+        ///if "" is myname then go, if not keep looking
+        ///
 
+        //add firstmeet to save
+        //if any global keywords or switches are added, add to save
+
+        //GoDialogue();
+    }
+
+    private void GoDialogue(){
+        
     }
 
     public void SelectNextOnMap(bool backwards){
