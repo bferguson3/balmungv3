@@ -22,6 +22,7 @@ public class UI : Sprite
     Label statLbl, menuLbl, feedbackLbl, oocTxt, dialogueTxt;
     private int combatSelNo;
     npc currentSpeaker;
+    string[] scrip;//
 
     public override void _Draw(){
        if(combatTransitionStart){
@@ -227,6 +228,8 @@ public class UI : Sprite
         menuLbl = GetNode("combatUI/menuSelTxt") as Label;
         feedbackLbl = GetNode("combatUI/feedbackTxt") as Label;
 
+        scrip = System.IO.File.ReadAllLines("./scripts/dialogue.db");
+
         combatUI.Hide();
         oocMenu.Hide();
         dialogueWin.Hide();
@@ -250,26 +253,38 @@ public class UI : Sprite
         HideMapSelector();
         //set input mode = ConvoListen
         //set input mode >>> ConvoSpeak
+        //GLOBALS KEYWORDS: (firstmeet), (hail), name, job, bye
         g.inputMode = inputModes.convoListen;
         currentSpeaker = p.targets[mapSelNo] as npc;
         dialogueWin.Show();
-        string[] scrip = System.IO.File.ReadAllLines("./scripts/dialogue.db");
+        
         bool npcfound = false;
         for(int c = 0; c < scrip.Length; c++){
             if(scrip[c].Contains("NPC")){
-                npcfound = true;
                 string npcname = scrip[c].substr(scrip[c].IndexOf(':')+1,scrip[c].Length-scrip[c].IndexOf(':')-1);
-                GD.Print(npcname + "|" + currentSpeaker.myName);
                 if(npcname == currentSpeaker.myName){
+                    npcfound = true;
                     GD.Print("speaker dialogue found.");
                 }    
             }
-            if(scrip[c].to_lower().Contains("*firstmeet") && npcfound){
-                dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
-                return;
+            if(npcfound){
+                if(!g.peopleMet.Contains(currentSpeaker.myName)){
+                    if(scrip[c].to_lower().Contains("firstmeet")){ //KEYWORD
+                        dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
+                        return;
+                    }
+                }
+                else
+                {
+                    if(scrip[c].to_lower().Contains("hail")){ //KEYWORD
+                        dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
+                        return;
+                    }
+                }
             }
         }
-    
+        oocMenu.Show();
+        
         
         //display GLOBAL KEYWORDS
         //load secret switch keywords

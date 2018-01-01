@@ -18,6 +18,7 @@ public class globals : Node
 
     public bool inCombat;//, tryToFlee;
     public List<Sprite> combatants = new List<Sprite>();// combatants;
+    public List<string> peopleMet = new List<string>();
 
     public override void _Ready()
     {
