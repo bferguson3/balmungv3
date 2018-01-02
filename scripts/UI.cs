@@ -12,7 +12,7 @@ public class UI : Sprite
     Timer fadeTicker;//, combatWaitTimer;
     int fadeLoop = 0, oocSelNo, mapSelNo;
     int rectSize = 92;
-    bool[,] fadeRects = new bool[22,22];
+    bool[,] fadeRects = new bool[22, 22];
     Vector2 upLeft, bsqPos;
     public npc collidingWith;
     player p;
@@ -25,19 +25,24 @@ public class UI : Sprite
     string[] scrip;//
     private int oocMaxSel;
 
-    public override void _Draw(){
-       if(combatTransitionStart){
-           for(int j = 0; j < fadeLoop; j++){
-               for(int k = 0; k < fadeLoop; k++){
-                   if(fadeRects[j, k] == true){
-                       bsqPos = upLeft;
-                       bsqPos.x += j * rectSize;
-                       bsqPos.y += k * rectSize;
-                       DrawRect(new Rect2(bsqPos, new Vector2(rectSize, rectSize)), new Color(0,0,0,1));
-                   }
-               }
-           }
-       }
+    public override void _Draw()
+    {
+        if (combatTransitionStart)
+        {
+            for (int j = 0; j < fadeLoop; j++)
+            {
+                for (int k = 0; k < fadeLoop; k++)
+                {
+                    if (fadeRects[j, k] == true)
+                    {
+                        bsqPos = upLeft;
+                        bsqPos.x += j * rectSize;
+                        bsqPos.y += k * rectSize;
+                        DrawRect(new Rect2(bsqPos, new Vector2(rectSize, rectSize)), new Color(0, 0, 0, 1));
+                    }
+                }
+            }
+        }
     }
 
     public void StartFadeOut()
@@ -50,7 +55,7 @@ public class UI : Sprite
         upLeft.y = upBound;
 
         blackSquare = new Rect2(upLeft, new Vector2(128, 128));
-        
+
         combatTransitionStart = true;
 
         fadeTicker.Connect("timeout", this, "FadeTick");
@@ -59,7 +64,7 @@ public class UI : Sprite
 
         SetPosition(p.GetPosition() + new Vector2(-64, 0));
         //Show();
-    
+
     }
 
     public void OpenOOCMenu()
@@ -93,15 +98,18 @@ public class UI : Sprite
 
     public void FadeTick()
     {
-        for(int n = 0; n < fadeLoop; n++){
-                for(int c = fadeLoop; c >= 0; c--){
-                    if(n+c <= fadeLoop)
-                        fadeRects[n, c] = true;
-                }
+        for (int n = 0; n < fadeLoop; n++)
+        {
+            for (int c = fadeLoop; c >= 0; c--)
+            {
+                if (n + c <= fadeLoop)
+                    fadeRects[n, c] = true;
+            }
         }
         fadeLoop++;
         Update();
-        if(fadeLoop > 21){
+        if (fadeLoop > 21)
+        {
             fadeLoop = 0;
             combatTransitionStart = false;
             fadeTicker.Stop();
@@ -126,39 +134,45 @@ public class UI : Sprite
         g.inputMode = inputModes.combatCommand;
     }
 
-    public void HideSelectionText(){
+    public void HideSelectionText()
+    {
         menuLbl.Text = "";
         combatSel.Hide();
     }
 
     public void MoveCombatSel(string key)
     {
-        if(key == g.upButton)
+        if (key == g.upButton)
         {
-            if(combatSelNo > 1){
+            if (combatSelNo > 1)
+            {
                 combatSelNo = combatSelNo - 2;
             }
         }
-        else if(key == g.downButton)
+        else if (key == g.downButton)
         {
-            if(combatSelNo < 2){
+            if (combatSelNo < 2)
+            {
                 combatSelNo = combatSelNo + 2;
             }
         }
-        else if(key == g.rightButton)
+        else if (key == g.rightButton)
         {
-            if(combatSelNo == 0 || combatSelNo == 2){
+            if (combatSelNo == 0 || combatSelNo == 2)
+            {
                 combatSelNo++;
             }
         }
-        else if(key == g.leftButton)
+        else if (key == g.leftButton)
         {
-            if(combatSelNo == 1 || combatSelNo == 3){
+            if (combatSelNo == 1 || combatSelNo == 3)
+            {
                 combatSelNo--;
             }
         }
 
-        switch(combatSelNo){
+        switch (combatSelNo)
+        {
             //230,175 is efult pos
             case 0:
                 combatSel.SetPosition(new Vector2(230, 175));
@@ -180,14 +194,15 @@ public class UI : Sprite
 
     public void ConfirmCombatSel()
     {
-        if(combatSelNo == 1){
+        if (combatSelNo == 1)
+        {
             c.StartPlayerMovement();
         }
     }
 
     public void ConfirmOOCSel()
     {
-        if(oocSelNo == 0)
+        if (oocSelNo == 0)
         {
             g.inputMode = inputModes.selectToTalk;
             p.SelectAdjacentNPCs();
@@ -199,7 +214,7 @@ public class UI : Sprite
     {
         feedbackLbl.Text = update;
     }
-    
+
     public void MapSelect(Sprite target)
     {
         mapSel.Show();
@@ -209,7 +224,7 @@ public class UI : Sprite
     public override void _Ready()
     {
         Show();
-        cam = GetNode("../playerSprite/Camera2D") as Camera2D;    
+        cam = GetNode("../playerSprite/Camera2D") as Camera2D;
         p = GetNode("../playerSprite") as player;
         g = GetNode("/root/globals") as globals;
         c = GetNode("../combatOps") as combatOps;
@@ -244,48 +259,57 @@ public class UI : Sprite
         mapSel.Hide();
     }
 
-   public override void _Process(float delta)
+    public override void _Process(float delta)
     {
-        
+
     }
 
     private void RunConvoAction(string command)
     {
         //string comm = command.Substring(2);
-        if(command.ToUpper().Contains("**NEW")){
-            string comm = command.substr(command.IndexOf(':'), (command.Length-command.IndexOf(':')));
-            do{
+        if (command.ToUpper().Contains("**NEW"))
+        {
+            string comm = command.substr(command.IndexOf(':'), (command.Length - command.IndexOf(':')));
+            do
+            {
                 comm = FindNextKeyword(comm);
             }
-            while(comm.Length > 2);   
+            while (comm.Length > 2);
         }
-        
+
     }
 
-    private string FindNextKeyword(string comm){
+    private string FindNextKeyword(string comm)
+    {
         int aa = 0;
         int bb = 0;
-        if(comm.Contains(",")){
-                //I contain plural tree choices!
-                foreach(char n in comm){
-                    if(n == ','){
-                        break;
-                    }
-                    if(n != ' ' && n != ':'){
-                        bb++;
-                    }
-                    else
-                        aa++;
+        if (comm.Contains(","))
+        {
+            //I contain plural tree choices!
+            foreach (char n in comm)
+            {
+                if (n == ',')
+                {
+                    break;
                 }
-            
-                g.currentVisibleKeywords.Add(comm.substr(aa, bb));
-                GD.Print(comm.substr(aa, bb) + " added to new keywords");
-                comm = comm.Substring(aa+bb+1);
+                if (n != ' ' && n != ':')
+                {
+                    bb++;
+                }
+                else
+                    aa++;
+            }
+
+            g.currentVisibleKeywords.Add(comm.substr(aa, bb));
+            GD.Print(comm.substr(aa, bb) + " added to new keywords");
+            comm = comm.Substring(aa + bb + 1);
         }
-        else{
+        else
+        {
             aa = 0;
-            foreach(char b in comm){
-                if(b == ',' || b == ' ')
+            foreach (char b in comm)
+            {
+                if (b == ',' || b == ' ')
                     aa++;
             }
             g.currentVisibleKeywords.Add(comm.Substring(aa));
@@ -308,37 +332,48 @@ public class UI : Sprite
         dialogueWin.Show();
         PopKeywords();
         bool npcfound = false;
-        for(int c = 0; c < scrip.Length; c++){
-            if(scrip[c].Contains("NPC")){
-                string npcname = scrip[c].substr(scrip[c].IndexOf(':')+1,scrip[c].Length-scrip[c].IndexOf(':')-1);
-                if(npcname == currentSpeaker.myName){
+        for (int c = 0; c < scrip.Length; c++)
+        {
+            if (scrip[c].Contains("NPC"))
+            {
+                string npcname = scrip[c].substr(scrip[c].IndexOf(':') + 1, scrip[c].Length - scrip[c].IndexOf(':') - 1);
+                if (npcname == currentSpeaker.myName)
+                {
                     npcfound = true;
                     GD.Print("speaker dialogue found.");
-                }    
+                }
             }
-            if(npcfound){
-                if(!g.peopleMet.Contains(currentSpeaker.myName)){
-                    if(scrip[c].to_lower().Contains("firstmeet")){ //KEYWORD
-                        dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
-                        for(int j = 1; j < 9; j++){
+            if (npcfound)
+            {
+                if (!g.peopleMet.Contains(currentSpeaker.myName))
+                {
+                    if (scrip[c].to_lower().Contains("firstmeet"))
+                    { //KEYWORD
+                        dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':') + 1, scrip[c].Length - scrip[c].IndexOf(':') - 1);
+                        for (int j = 1; j < 9; j++)
+                        {
                             //Check up to 9 rows ahead for commands.
-                            if(scrip[c+j].Contains("**")){
-                                RunConvoAction(scrip[c+j]);
+                            if (scrip[c + j].Contains("**"))
+                            {
+                                RunConvoAction(scrip[c + j]);
                             }
                             else
                                 break;
                         }
                         break;
-                        }
                     }
+                }
                 else //AREADY MET PERSON CODE:
                 {
-                    if(scrip[c].to_lower().Contains("hail")){ //KEYWORD
-                        dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
-                        for(int j = 1; j < 9; j++){
+                    if (scrip[c].to_lower().Contains("hail"))
+                    { //KEYWORD
+                        dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':') + 1, scrip[c].Length - scrip[c].IndexOf(':') - 1);
+                        for (int j = 1; j < 9; j++)
+                        {
                             //Check up to 9 rows ahead for commands.
-                            if(scrip[c+j].Contains("**")){
-                                RunConvoAction(scrip[c+j]);
+                            if (scrip[c + j].Contains("**"))
+                            {
+                                RunConvoAction(scrip[c + j]);
                             }
                             else
                                 break;
@@ -360,14 +395,18 @@ public class UI : Sprite
     public void ConvoSel(string key)
     {
         var oocselpos = oocSel.Position;
-        if(key == g.downButton){
-            if(oocSelNo < oocMaxSel){
+        if (key == g.downButton)
+        {
+            if (oocSelNo < oocMaxSel)
+            {
                 oocSelNo++;
                 oocselpos.y += 19f;
             }
         }
-        else if(key == g.upButton){
-            if(oocSelNo > 0){
+        else if (key == g.upButton)
+        {
+            if (oocSelNo > 0)
+            {
                 oocSelNo--;
                 oocselpos.y -= 19f;
             }
@@ -379,20 +418,24 @@ public class UI : Sprite
     {
         oocMaxSel = 0;
         oocTxt.Text = "";
-        foreach(string n in g.globalKeywords){
-            var n2 = n.substr(0,1).ToUpper() + n.Substring(1);
+        foreach (string n in g.globalKeywords)
+        {
+            var n2 = n.substr(0, 1).ToUpper() + n.Substring(1);
             oocTxt.Text += n2 + "\n";
             oocMaxSel++;
         }
-        if(g.privvyKeywords.ContainsKey(currentSpeaker.myName)){
+        if (g.privvyKeywords.ContainsKey(currentSpeaker.myName))
+        {
             //TODO:Second-hand knowledge of this person is known, 
             //and the relevant keyword should be added automatically.
             //And maxsel inc.
         }
-        if(g.currentVisibleKeywords.Count != 0){
+        if (g.currentVisibleKeywords.Count != 0)
+        {
             //current speaker's non-privvy, non-global keywords.
-            foreach(string m in g.currentVisibleKeywords){
-                var m2 = m.substr(0,1).ToUpper() + m.Substring(1);
+            foreach (string m in g.currentVisibleKeywords)
+            {
+                var m2 = m.substr(0, 1).ToUpper() + m.Substring(1);
                 oocTxt.Text += m2 + "\n";
                 oocMaxSel++;
             }
@@ -403,7 +446,8 @@ public class UI : Sprite
         //TODO: Add support for scrolling.
     }
 
-    public void AdvanceConvo(){
+    public void AdvanceConvo()
+    {
         //FIRST, CHECK TO SEE IF HTE LINE IS DONE.
         //TODO: Add check for extra long strings.
 
@@ -417,17 +461,22 @@ public class UI : Sprite
 
     }
 
-    public void SelectNextOnMap(bool backwards){
-        if(!backwards){
+    public void SelectNextOnMap(bool backwards)
+    {
+        if (!backwards)
+        {
             mapSelNo++;
         }
-        else{
+        else
+        {
             mapSelNo--;
         }
-        if(mapSelNo < 0){
+        if (mapSelNo < 0)
+        {
             mapSelNo = p.targets.Count - 1;
         }
-        if(mapSelNo > p.targets.Count - 1){
+        if (mapSelNo > p.targets.Count - 1)
+        {
             mapSelNo = 0;
         }
         MapSelect(p.targets[mapSelNo] as Sprite);
