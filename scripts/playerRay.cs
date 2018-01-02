@@ -61,10 +61,12 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
-                    if(col.GetName() == "combatFleeZone")
-                    {}//g.tryToFlee = true;}
-                    else{
-                    //    g.tryToFlee = false;
+                    }
+                    if (col.GetName() == "combatFleeZone")
+                    { }//g.tryToFlee = true;}
+                    else
+                    {
+                        //    g.tryToFlee = false;
                         g.playerBlockedDown = true;
                     }
                 }
@@ -89,11 +91,14 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
-                    if(col.GetName() == "combatFleeZone")
-                    {}//g.tryToFlee = true;}
-                    else{
-                     //   g.tryToFlee = false;
-                        g.playerBlockedUp = true;
+
+                        if (col.GetName() == "combatFleeZone")
+                        { }//g.tryToFlee = true;}
+                        else
+                        {
+                            //   g.tryToFlee = false;
+                            g.playerBlockedUp = true;
+                        }
                     }
                 }
             }
@@ -117,10 +122,12 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
-                    if(col.GetName() == "combatFleeZone")
-                    {}//g.tryToFlee = true;}
-                    else{
-                    //    g.tryToFlee = false;
+                    }
+                    if (col.GetName() == "combatFleeZone")
+                    { }//g.tryToFlee = true;}
+                    else
+                    {
+                        //    g.tryToFlee = false;
                         g.playerBlockedLeft = true;
                     }
                 }
@@ -128,7 +135,7 @@ public class playerRay : RayCast2D
             else
             {
                 g.playerBlockedLeft = false;
-
+            }
         }
         else if (GetName() == "playerRayRight")
         {
@@ -145,10 +152,12 @@ public class playerRay : RayCast2D
                     if (!g.inCombat)
                     {
                         CheckCombat(col);
-                    if(col.GetName() == "combatFleeZone")
-                    {}//g.tryToFlee = true;}
-                    else{
-                    //    g.tryToFlee = false;
+                    }
+                    if (col.GetName() == "combatFleeZone")
+                    { }//g.tryToFlee = true;}
+                    else
+                    {
+                        //    g.tryToFlee = false;
                         g.playerBlockedRight = true;
                     }
                 }
