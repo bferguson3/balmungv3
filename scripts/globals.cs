@@ -26,7 +26,7 @@ public class globals : Node
                 upReleased = true,
                 downReleased = true;
 
-    public const string upButton = "ui_up",
+    public string upButton = "ui_up",
                         leftButton = "ui_left",
                         rightButton = "ui_right",
                         downButton = "ui_down",
@@ -35,7 +35,7 @@ public class globals : Node
 
     public inputModes inputMode;
 
-    public bool inCombat;//, tryToFlee;
+    //public bool inCombat;//, tryToFlee;
     public List<Sprite> combatants = new List<Sprite>();// combatants;
     public List<string> peopleMet = new List<string>();
     public List<string> globalKeywords = new List<string>();
