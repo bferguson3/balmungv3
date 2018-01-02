@@ -14,10 +14,10 @@ public class combatOps : Node
 
     private groundFX ground;
     
-    Node battlemap;
+    private Node battlemap;
 
 
- public void SetBattlePositions(battlePositions bpos, player pl, npc np)
+    public void SetBattlePositions(battlePositions bpos, player pl, npc np)
     {
         if (bpos == battlePositions.standard)
         {
@@ -28,40 +28,47 @@ public class combatOps : Node
             np.SetPosition(e1pos.GetGlobalPosition());
         }
     }
+
     public void SetupCombat(npc collidingWith)
     {
+        //TODO: make this better
+        var tiles = GetNode("../groundlayer") as TileMap;
+        GD.Print((int)(((p.Position.x - 16)/32)+1) + ", " + (int)(((p.Position.y - 16)/32)+1));
+        var tilex = (int)(((p.Position.x - 16)/32)+1);
+        var tiley = (int)(((p.Position.y - 16)/32)+1);
+        int battile = tiles.GetCell(tilex, tiley);
+        
+        if(battile == 5181)
+        {//dark dirt
+            battlemap = GetNode("../battlemap");
+            GD.Print("Battle: Dark dirt. tile id " + battile);
+        }
+        else
+        {
+            GD.Print("Battle scene: Undefined yet tile id: " + battile);
+            battlemap = GetNode("../battlemap");
+        }
 
-            //TODO: make this better
-            var tiles = GetNode("../groundlayer") as TileMap;
-            GD.Print((int)(((p.Position.x - 16)/32)+1) + ", " + (int)(((p.Position.y - 16)/32)+1));
-            var tilex = (int)(((p.Position.x - 16)/32)+1);
-            var tiley = (int)(((p.Position.y - 16)/32)+1);
-            int battile = tiles.GetCell(tilex, tiley);
-            if(battile == 5181) {//dark dirt
-                battlemap = GetNode("../battlemap");
-                GD.Print("Battle: Dark dirt. tile id " + battile);
+        g.combatants.Add(collidingWith);
+        g.combatants.Add(p);
+
+        foreach(Node n in g.combatants)
+        {
+            if(n is player)
+            {
+                //player
+                var me = n as player;
+                me.actionWeight = 0;
+                me.turnTaken = false;
             }
-            else{
-                GD.Print("Battle scene: Undefined yet tile id: " + battile);
-                battlemap = GetNode("../battlemap");
-            }
-            g.combatants.Add(collidingWith);
-            g.combatants.Add(p);
-            foreach(Node n in g.combatants){
-                if(n is player){
-                    //player
-                    var me = n as player;
-                    me.actionWeight = 0;
-                    me.turnTaken = false;
-                }
-                else if (n is npc)
-               {
+            else if (n is npc)
+            {
                 //NPC
-                   var me = n as npc;
-                   me.actionWeight = 0;
-                   me.turnTaken = false;
-               }
+                var me = n as npc;
+                me.actionWeight = 0;
+                me.turnTaken = false;
             }
+        }
 
         SetBattlePositions(battlePositions.standard, p, collidingWith);
         gui.InitializeCombatUI();

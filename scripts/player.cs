@@ -85,6 +85,7 @@ public class player : Sprite
         targets.Clear();
         FindCollidingTargets();
         if(targets.Count > 0)
+        {
             gui.MapSelect(targets[0] as Sprite);
         }
         else
@@ -98,28 +99,37 @@ public class player : Sprite
         //Am I moving towards an ESCAPE ROUTE according to the movement
         //key pressed?
         //DULR 0123
-        if(key == g.downButton){
-            if(laterals[0].IsColliding()){
+        if(key == g.downButton)
+        {
+            if(laterals[0].IsColliding())
+            {
                 var hit = laterals[0].GetCollider() as Node; 
-                if(hit.GetName() == "combatFleeZone"){
+                if(hit.GetName() == "combatFleeZone")
+                {
                     return true;
                 }
                 GD.Print("flee down" + hit.GetName());
             }
         }
-        if(key == g.upButton){
-            if(laterals[1].IsColliding()){
+        if(key == g.upButton)
+        {
+            if(laterals[1].IsColliding())
+            {
                 var hit = laterals[1].GetCollider() as Node; 
-                if(hit.GetName() == "combatFleeZone"){
+                if(hit.GetName() == "combatFleeZone")
+                {
                     return true;
                 }
                 GD.Print("flee up" + hit.GetName());
             }
         }
-        if(key == g.leftButton){
-            if(laterals[2].IsColliding()){
+        if(key == g.leftButton)
+        {
+            if(laterals[2].IsColliding())
+            {
                 var hit = laterals[2].GetCollider() as Node; 
-                if(hit.GetName() == "combatFleeZone"){
+                if(hit.GetName() == "combatFleeZone")
+                {
                     return true;
                 }
                 GD.Print("flee left" + hit.GetName());
@@ -141,12 +151,18 @@ public class player : Sprite
     private void FindCollidingTargets()
     {
 
-        if(g.inputMode == inputModes.selectToTalk){
-            for(int c = 0; c < 4; c++){
-                if(laterals[c].IsColliding()){
+        if(g.inputMode == inputModes.selectToTalk)
+        {
+            for(int c = 0; c < 4; c++)
+            {
+                if(laterals[c].IsColliding())
+                {
                     var col = laterals[c].GetCollider() as Node;
-                    if(col.GetParent() is npc){
+
+                    if(col.GetParent() is npc)
+                    {
                         var me = col.GetParent() as npc;
+
                         if(me.myType == npcType.talker)
                         {
 
@@ -156,13 +172,18 @@ public class player : Sprite
                 }
 
             }
-            for(int c = 0; c < 4; c++){
-                if(diagonals[c].IsColliding()){
+            for(int c = 0; c < 4; c++)
+            {
+                if(diagonals[c].IsColliding())
+                {
                     var col = diagonals[c].GetCollider() as Node;
-                    if(col.GetParent() is npc){
+                    
+                    if(col.GetParent() is npc)
+                    {
                         var me = col.GetParent() as npc;
-                        if(me.myType == npcType.talker){
 
+                        if(me.myType == npcType.talker)
+                        {
                             targets.Add(me);
                         }
                     }

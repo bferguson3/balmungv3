@@ -68,14 +68,18 @@ public class inputManager : Node
             {
                 c.CancelPlayerMovement();
             }
-
-            else{
-                if(p.CheckCollision(key) && p.CheckMoveBoundary(key)){
+            else
+            {
+                if(p.CheckCollision(key) && p.CheckMoveBoundary(key))
+                {
                     if(!p.FleeingDirection(key))
+                    {
                         p.MoveThisSprite(key);
+                    }
                     else
+                    {
                         gui.UpdateCombatFeedback("Can't escape yet!");
-
+                    }
                 }
             }
         }
@@ -126,16 +130,19 @@ public class inputManager : Node
                 gui.SelectNextOnMap(true);
             }
         }
-        else if(g.inputMode == inputModes.convoListen){
-            if(key == g.aButton || key == g.bButton){
+        else if(g.inputMode == inputModes.convoListen)
+        {
+            if(key == g.aButton || key == g.bButton)
+            {
                 gui.AdvanceConvo();
             }
         }
-        else if(g.inputMode == inputModes.convoSpeak){
-            if(key == g.downButton || key == g.upButton || key == g.aButton || key == g.bButton){
+        else if(g.inputMode == inputModes.convoSpeak)
+        {
+            if(key == g.downButton || key == g.upButton || key == g.aButton || key == g.bButton)
+            {
                 gui.ConvoSel(key);
             }
-            
         }
     }
 

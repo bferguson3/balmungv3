@@ -49,7 +49,6 @@ public class globals : Node
         globalKeywords.Add("job");
         //globalKeywords.Add("bye");
     }
-    
 
 //    public override void _Process(float delta)
 //    {
