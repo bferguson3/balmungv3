@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public enum inputModes { noInput, moving, combatMove, combatCommand, oocMenuRoot, selectToTalk }
+public enum inputModes { noInput, moving, combatMove, combatCommand, oocMenuRoot, selectToTalk, convoListen, convoSpeak }
 public enum battlePositions { standard, reversed, rtl, ltr, hasami, ambushed }
 public enum actors { player, enemy }
 
@@ -35,16 +35,28 @@ public class globals : Node
 
     public inputModes inputMode;
 
-
-    public bool playerBlockedDown, playerBlockedUp, playerBlockedLeft, playerBlockedRight;
-
     public bool inCombat;//, tryToFlee;
     public List<Sprite> combatants = new List<Sprite>();// combatants;
+    public List<string> peopleMet = new List<string>();
+    public List<string> globalKeywords = new List<string>();
+    public List<string> currentVisibleKeywords = new List<string>();
+    public Dictionary<string, string> privvyKeywords = new Dictionary<string, string>();
 
     public override void _Ready()
     {
-
+        //TODO: deal with this over save files?
+        globalKeywords.Add("name");
+        globalKeywords.Add("job");
+        //globalKeywords.Add("bye");
     }
+    
+
+//    public override void _Process(float delta)
+//    {
+//        // Called every frame. Delta is time since last frame.
+//        // Update game logic here.
+//        
+//    }
 
     //    public override void _Process(float delta)
     //    {

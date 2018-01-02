@@ -126,6 +126,17 @@ public class inputManager : Node
                 gui.SelectNextOnMap(true);
             }
         }
+        else if(g.inputMode == inputModes.convoListen){
+            if(key == g.aButton || key == g.bButton){
+                gui.AdvanceConvo();
+            }
+        }
+        else if(g.inputMode == inputModes.convoSpeak){
+            if(key == g.downButton || key == g.upButton || key == g.aButton || key == g.bButton){
+                gui.ConvoSel(key);
+            }
+            
+        }
     }
 
     void FirstDepress(string key)

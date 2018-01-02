@@ -21,8 +21,7 @@ public class combatOps : Node
     {
         if (bpos == battlePositions.standard)
         {
-            //TODO
-            //Properly position player and enemies. Atm splits +3/-3 squares.
+            //TODO: Support for big parties
             var p1pos = battlemap.GetNode("p1_combat_start") as Node2D;
             var e1pos = battlemap.GetNode("enemy_combat_start") as Node2D;
             pl.SetPosition(p1pos.GetGlobalPosition());
@@ -33,8 +32,19 @@ public class combatOps : Node
     {
 
             //TODO: make this better
-            //TODO: figure out good way to determine battle background type
-            battlemap = GetNode("../battlemap");
+            var tiles = GetNode("../groundlayer") as TileMap;
+            GD.Print((int)(((p.Position.x - 16)/32)+1) + ", " + (int)(((p.Position.y - 16)/32)+1));
+            var tilex = (int)(((p.Position.x - 16)/32)+1);
+            var tiley = (int)(((p.Position.y - 16)/32)+1);
+            int battile = tiles.GetCell(tilex, tiley);
+            if(battile == 5181) {//dark dirt
+                battlemap = GetNode("../battlemap");
+                GD.Print("Battle: Dark dirt. tile id " + battile);
+            }
+            else{
+                GD.Print("Battle scene: Undefined yet tile id: " + battile);
+                battlemap = GetNode("../battlemap");
+            }
             g.combatants.Add(collidingWith);
             g.combatants.Add(p);
             foreach(Node n in g.combatants){
@@ -82,7 +92,6 @@ public class combatOps : Node
                     highDex = me.DEX;
                     nextActor = n;
                 }
-                //player
             }
             else if (n is npc)
             {
@@ -93,7 +102,6 @@ public class combatOps : Node
                     highDex = me.DEX;
                     nextActor = n;
                 }
-                //NPC
             }
         }
 
@@ -107,7 +115,7 @@ public class combatOps : Node
             gui.UpdateCombatFeedback(f + "'s turn. \nCommand?");
             me.InitializeTurn();
             gui.InitializePlayerMenu();
-            //DONT FORGET TO TOGGLE THE ACTEDTHISTURN VARIABLE AFTER ACTION??? or here?
+            //TODO: DONT FORGET TO TOGGLE THE ACTEDTHISTURN VARIABLE AFTER ACTION??? or here?
         }
         else if (nextActor is npc)
         {

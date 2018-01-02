@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public enum npcType { enemy, shopKeep, talker }
 public enum aITypes { melee, ranged }
@@ -60,6 +61,7 @@ public class npc : Sprite
 
     private Timer newt = new Timer();
 
+
     public override void _Ready()
     {
         g = GetNode("/root/globals") as globals;
@@ -71,6 +73,7 @@ public class npc : Sprite
         newt.OneShot = true;
         AddChild(newt);
     }
+
 
     public void MoveForEscape()
     {
