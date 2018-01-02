@@ -13,8 +13,7 @@ public class combatOps : Node
     {
         if(bpos == battlePositions.standard)
         {
-            //TODO
-            //Properly position player and enemies. Atm splits +3/-3 squares.
+            //TODO: Support for big parties
             var p1pos = battlemap.GetNode("p1_combat_start") as Node2D;
             var e1pos = battlemap.GetNode("enemy_combat_start") as Node2D;
             pl.SetPosition(p1pos.GetGlobalPosition());
@@ -24,7 +23,6 @@ public class combatOps : Node
     public void SetupCombat(npc collidingWith)
     {
             //TODO: make this better
-            //TODO: figure out good way to determine battle background type
             var tiles = GetNode("../groundlayer") as TileMap;
             GD.Print((int)(((p.Position.x - 16)/32)+1) + ", " + (int)(((p.Position.y - 16)/32)+1));
             var tilex = (int)(((p.Position.x - 16)/32)+1);
@@ -67,7 +65,6 @@ public class combatOps : Node
         //Iterate through combatants
         //Determine initiative via DEX
         //TODO: Fix this mess
-        //GD.Print("Finding next highest speed who hasn't acted...");
         int highDex = 0;
         Node nextActor = g;
         foreach(Node n in g.combatants){
@@ -77,7 +74,6 @@ public class combatOps : Node
                     highDex = me.DEX;
                     nextActor = n;
                 }
-                //player
             }
             else if(n is npc){
                 var me = n as npc;
@@ -85,7 +81,6 @@ public class combatOps : Node
                     highDex = me.DEX;
                     nextActor = n;
                 }
-                //NPC
             }
         }
         GD.Print("Next Turn: " + nextActor.GetName());
@@ -96,7 +91,7 @@ public class combatOps : Node
             gui.UpdateCombatFeedback(f + "'s turn. \nCommand?");
             me.InitializeTurn();
             gui.InitializePlayerMenu();
-            //DONT FORGET TO TOGGLE THE ACTEDTHISTURN VARIABLE AFTER ACTION??? or here?
+            //TODO: DONT FORGET TO TOGGLE THE ACTEDTHISTURN VARIABLE AFTER ACTION??? or here?
         }
         else if(nextActor is npc)
         {

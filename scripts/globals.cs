@@ -19,6 +19,9 @@ public class globals : Node
     public bool inCombat;//, tryToFlee;
     public List<Sprite> combatants = new List<Sprite>();// combatants;
     public List<string> peopleMet = new List<string>();
+    public List<string> globalKeywords = new List<string>();
+    public List<string> currentVisibleKeywords = new List<string>();
+    public Dictionary<string, string> privvyKeywords = new Dictionary<string, string>();
 
     public override void _Ready()
     {
@@ -28,6 +31,11 @@ public class globals : Node
         downButton = "ui_down";
         aButton = "ui_accept";
         bButton = "ui_cancel";
+
+        //TODO: deal with this over save files?
+        globalKeywords.Add("name");
+        globalKeywords.Add("job");
+        //globalKeywords.Add("bye");
 
     }
 

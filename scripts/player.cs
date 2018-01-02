@@ -56,14 +56,10 @@ public class player : Sprite
 
     public void SelectAdjacentNPCs()
     {
-        //Use 8 directional rays
         //TODO: fix collision udlr?
         //For now iterate differently
-        //add to List<> of possibilities
-        //Selector position = target.position
         targets.Clear();
         FindCollidingTargets();
-        //
         if(targets.Count > 0)
             gui.MapSelect(targets[0] as Sprite);
         else{

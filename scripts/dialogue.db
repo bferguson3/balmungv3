@@ -1,31 +1,31 @@
 NPC:Sage
-*FIRSTMEET:”Hail and well met, stranger.”
-*ADDS:”stranger”
+FIRSTMEET:"Hail and well met, stranger."
+**ADDS:stranger
 
-'Name':”I am Sage.”
-*MET
+'Name':"I am Sage."
+**MET
 
-'hail':”You see Sage.”
-'Stranger': ”That’s you!”
-'Bye' : ”Farewell, stranger.”
+'hail':"You see Sage."
+'Stranger' :"That’s you!"
+'Bye': "Farewell, stranger."
 
 NPC:Sage's Apprentice
-*Firstmeet:”I’m lazy.”
-*new:”lazy”, "stupid"
+Firstmeet:"I’m lazy."
+**new:lazy,stupid, runes
 'else':"I donno man."
-'Lazy':”Yep”
+'Lazy':"Yep"
 'job':"Stuff."
 
-'Bye':”Farewell.”
+'Bye':"Farewell."
 'Stupid':"Nope"
-*return:*firstmeet
+**return:firstmeet
 
 NPC:Kendo
-*firstmeet:"What up G"
+firstmeet:"What up G"
 'hail':"You see a Kendo."
 'name':"I am Kendo!"
-*met
+**met
 'job':"Being awesome!"
-*adds : "awesome"
+**adds : awesome
 'awesome': "That's me"
 'bye':"Kbye"

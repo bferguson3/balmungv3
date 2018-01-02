@@ -39,7 +39,7 @@ extra_spacing_char = -1
 extra_spacing_space = -2
 font_data = ExtResource( 3 )
 
-[node name="UI" type="Sprite"]
+[node name="UI" type="Sprite" index="0"]
 
 scale = Vector2( 0.75, 0.75 )
 script = ExtResource( 1 )
@@ -191,7 +191,6 @@ max_lines_visible = -1
 
 [node name="oocMenu" type="Sprite" parent="." index="2"]
 
-editor/display_folded = true
 position = Vector2( 6.66666, 0 )
 scale = Vector2( 2.21264, 2.12963 )
 texture = ExtResource( 6 )
@@ -226,9 +225,10 @@ max_lines_visible = -1
 
 [node name="oocSel" type="Sprite" parent="oocMenu" index="1"]
 
-position = Vector2( -204.281, -97.0433 )
+position = Vector2( -203.076, -114.574 )
 scale = Vector2( 0.658684, 0.684837 )
 texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
 
 [node name="mapSelector" type="Sprite" parent="." index="3"]
 

@@ -23,6 +23,7 @@ public class UI : Sprite
     private int combatSelNo;
     npc currentSpeaker;
     string[] scrip;//
+    private int oocMaxSel;
 
     public override void _Draw(){
        if(combatTransitionStart){
@@ -248,16 +249,64 @@ public class UI : Sprite
         
     }
 
+    private void RunConvoAction(string command)
+    {
+        //string comm = command.Substring(2);
+        if(command.ToUpper().Contains("**NEW")){
+            string comm = command.substr(command.IndexOf(':'), (command.Length-command.IndexOf(':')));
+            do{
+                comm = FindNextKeyword(comm);
+            }
+            while(comm.Length > 2);   
+        }
+        
+    }
+
+    private string FindNextKeyword(string comm){
+        int aa = 0;
+        int bb = 0;
+        if(comm.Contains(",")){
+                //I contain plural tree choices!
+                foreach(char n in comm){
+                    if(n == ','){
+                        break;
+                    }
+                    if(n != ' ' && n != ':'){
+                        bb++;
+                    }
+                    else
+                        aa++;
+                }
+            
+                g.currentVisibleKeywords.Add(comm.substr(aa, bb));
+                GD.Print(comm.substr(aa, bb) + " added to new keywords");
+                comm = comm.Substring(aa+bb+1);
+        }
+        else{
+            aa = 0;
+            foreach(char b in comm){
+                if(b == ',' || b == ' ')
+                    aa++;
+            }
+            g.currentVisibleKeywords.Add(comm.Substring(aa));
+            GD.Print(comm.Substring(aa) + " added to new keywords");
+            comm = "";
+        }
+        return comm;
+    }
+
     public void StartConversation()
     {
         HideMapSelector();
-        //set input mode = ConvoListen
-        //set input mode >>> ConvoSpeak
         //GLOBALS KEYWORDS: (firstmeet), (hail), name, job, bye
+        //After the line of dialogue has been grabbed,
+        //Check the NEXT line
+        //and make sure it doesn't contain a **.
+        //If it does, perform action.
         g.inputMode = inputModes.convoListen;
         currentSpeaker = p.targets[mapSelNo] as npc;
         dialogueWin.Show();
-        
+        PopKeywords();
         bool npcfound = false;
         for(int c = 0; c < scrip.Length; c++){
             if(scrip[c].Contains("NPC")){
@@ -271,36 +320,101 @@ public class UI : Sprite
                 if(!g.peopleMet.Contains(currentSpeaker.myName)){
                     if(scrip[c].to_lower().Contains("firstmeet")){ //KEYWORD
                         dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
-                        return;
+                        for(int j = 1; j < 9; j++){
+                            //Check up to 9 rows ahead for commands.
+                            if(scrip[c+j].Contains("**")){
+                                RunConvoAction(scrip[c+j]);
+                            }
+                            else
+                                break;
+                        }
+                        break;
+                        }
                     }
-                }
-                else
+                else //AREADY MET PERSON CODE:
                 {
                     if(scrip[c].to_lower().Contains("hail")){ //KEYWORD
                         dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':')+1, scrip[c].Length - scrip[c].IndexOf(':')-1);
-                        return;
+                        for(int j = 1; j < 9; j++){
+                            //Check up to 9 rows ahead for commands.
+                            if(scrip[c+j].Contains("**")){
+                                RunConvoAction(scrip[c+j]);
+                            }
+                            else
+                                break;
+                        }
+                        break;
                     }
                 }
             }
         }
         oocMenu.Show();
-        
-        
-        //display GLOBAL KEYWORDS
-        //load secret switch keywords
-        //display hail, or firstmeet if never met before
-        ///readline until "" is found
-        ///if "" is myname then go, if not keep looking
-        ///
-
+        //TODO: Make another < indicator for dialogue
+        var newoocselpos = new Vector2(160, 125);
+        oocSel.Position = newoocselpos;
+        //TODO:
         //add firstmeet to save
         //if any global keywords or switches are added, add to save
-
-        //GoDialogue();
     }
 
-    private void GoDialogue(){
-        
+    public void ConvoSel(string key)
+    {
+        var oocselpos = oocSel.Position;
+        if(key == g.downButton){
+            if(oocSelNo < oocMaxSel){
+                oocSelNo++;
+                oocselpos.y += 19f;
+            }
+        }
+        else if(key == g.upButton){
+            if(oocSelNo > 0){
+                oocSelNo--;
+                oocselpos.y -= 19f;
+            }
+        }
+        oocSel.SetPosition(oocselpos);
+    }
+
+    private void PopKeywords()
+    {
+        oocMaxSel = 0;
+        oocTxt.Text = "";
+        foreach(string n in g.globalKeywords){
+            var n2 = n.substr(0,1).ToUpper() + n.Substring(1);
+            oocTxt.Text += n2 + "\n";
+            oocMaxSel++;
+        }
+        if(g.privvyKeywords.ContainsKey(currentSpeaker.myName)){
+            //TODO:Second-hand knowledge of this person is known, 
+            //and the relevant keyword should be added automatically.
+            //And maxsel inc.
+        }
+        if(g.currentVisibleKeywords.Count != 0){
+            //current speaker's non-privvy, non-global keywords.
+            foreach(string m in g.currentVisibleKeywords){
+                var m2 = m.substr(0,1).ToUpper() + m.Substring(1);
+                oocTxt.Text += m2 + "\n";
+                oocMaxSel++;
+            }
+        }
+
+        oocTxt.Text += "Bye";
+        //oocMaxSel++; < not needed since it starts at 0
+        //TODO: Add support for scrolling.
+    }
+
+    public void AdvanceConvo(){
+        //FIRST, CHECK TO SEE IF HTE LINE IS DONE.
+        //TODO: Add check for extra long strings.
+
+        //if line is done and ready to ask question:
+        //Also, add any keywords NOW to visible list that may be new.
+        //OR: change to new tree.
+        PopKeywords();
+        var oldoocselpos = new Vector2(-203, -115);
+        oocSel.Position = oldoocselpos;
+        g.inputMode = inputModes.convoSpeak;
+
     }
 
     public void SelectNextOnMap(bool backwards){
