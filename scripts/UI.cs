@@ -437,6 +437,7 @@ public class UI : Sprite
         dialogueWin.Show();
         oocSel.Show();
         InitializeKeywords();
+        GD.Print("Keywords initialized OK");
         dialogueReturnTo = "";
         bool npcfound = false;
         for (int c = 0; c < scrip.Length; c++)
@@ -528,7 +529,7 @@ public class UI : Sprite
             else{
                 GD.Print("Selected NEW keyword:" + newTopics[oocSelNo]);
                 SpeakLine(newTopics[oocSelNo]);
-                DialogueTreeReturn("ROOT");
+                DialogueTreeReturn(dialogueReturnTo);
             }
         }
         oocSel.SetPosition(oocselpos);
@@ -541,6 +542,10 @@ public class UI : Sprite
         //TODO: Fix this loop for COUNTER based on dboffset
         for(int a = dbOffset; a < scrip.Length; a++) //99 is max lines for 1 npc atm.
         {
+            //if(scrip[a].ToUpper().Contains("NPC:")){
+            //    SpeakLine("ELSE");
+            //    return;
+            //}
             if(scrip[a].ToUpper().Contains("'"+line.ToUpper()+"'"))
             {
                 GD.Print("What's that? You asked about: " + line);
