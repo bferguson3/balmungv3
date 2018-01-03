@@ -39,7 +39,7 @@ extra_spacing_char = -1
 extra_spacing_space = -2
 font_data = ExtResource( 3 )
 
-[node name="UI" type="Sprite"]
+[node name="UI" type="Sprite" index="0"]
 
 scale = Vector2( 0.75, 0.75 )
 script = ExtResource( 1 )
@@ -223,13 +223,6 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="oocSel" type="Sprite" parent="oocMenu" index="1"]
-
-position = Vector2( -203.076, -114.574 )
-scale = Vector2( 0.658684, 0.684837 )
-texture = ExtResource( 4 )
-_sections_unfolded = [ "Transform" ]
-
 [node name="mapSelector" type="Sprite" parent="." index="3"]
 
 visible = false
@@ -237,5 +230,12 @@ modulate = Color( 1, 1, 1, 0.480667 )
 scale = Vector2( 0.75, 0.75 )
 texture = ExtResource( 7 )
 script = ExtResource( 8 )
+
+[node name="oocSel" type="Sprite" parent="." index="4"]
+
+position = Vector2( -442.667, -244 )
+scale = Vector2( 1.45743, 1.45845 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
 
 

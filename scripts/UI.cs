@@ -8,13 +8,14 @@ public class UI : Sprite
 {
     bool combatTransitionStart;
     Rect2 frame, blackSquare;
+    private string dialogueReturnTo;
     Camera2D cam;
     Timer fadeTicker;//, combatWaitTimer;
     int fadeLoop = 0, oocSelNo, mapSelNo;
     int rectSize = 92;
     bool[,] fadeRects = new bool[22, 22];
     Vector2 upLeft, bsqPos,
-        oocSelBasePos = new Vector2(-203,-115);
+        oocSelBasePos = new Vector2(-442,-244);
     public npc collidingWith;
     player p;
     globals g;
@@ -64,19 +65,20 @@ public class UI : Sprite
         fadeTicker.Start();
 
         SetPosition(p.GetPosition() + new Vector2(-64, 0));
-        //Show();
-
+        
     }
 
     public void OpenOOCMenu()
     {
+        oocTxt.Text = "Talk\nItems\nMagic\nStatus\nOpen\nAttack\nCamp\nSystem";
         oocMenu.Show();
         oocSel.Show();
         oocSelNo = 0;
-
+        //TODO: Add support for saving last menu selection, possibly.
         var cam = p.FindNode("Camera2D") as Camera2D;
         SetPosition(cam.GetCameraPosition());
-        oocSel.SetPosition(new Vector2(oocSel.Position.x, -115f));
+        oocSel.SetPosition(oocSelBasePos);
+        oocSel.SetRotationDegrees(0f);
     }
 
     public void CloseOOCMenu()
@@ -210,6 +212,7 @@ public class UI : Sprite
             g.inputMode = inputModes.selectToTalk;
             p.SelectAdjacentNPCs();
             oocMenu.Hide();
+            oocSel.Hide();
         }
     }
 
@@ -233,7 +236,7 @@ public class UI : Sprite
         c = GetNode("../combatOps") as combatOps;
 
         oocMenu = GetNode("oocMenu") as Sprite;
-        oocSel = GetNode("oocMenu/oocSel") as Sprite;
+        oocSel = GetNode("oocSel") as Sprite;
         oocTxt = GetNode("oocMenu/menuTxt") as Label;
         dialogueWin = GetNode("dialogueWin") as Sprite;
         dialogueTxt = GetNode("dialogueWin/dialogueTxt") as Label;
@@ -262,10 +265,10 @@ public class UI : Sprite
         mapSel.Hide();
     }
 
-    public override void _Process(float delta)
-    {
+    //public override void _Process(float delta)
+    //{
 
-    }
+    //}
 
     private void RunConvoAction(string command)
     {
@@ -292,7 +295,29 @@ public class UI : Sprite
             }
             while (comm.Length > 1);
         }
+        else if(command.ToUpper().Contains("**RETURN")) //Bring me back to another tree!
+        {
+            string comm = command.substr(command.IndexOf(':'), (command.Length - command.IndexOf(':')));
+            comm = TrimForKeyword(comm);
+            //SpeakLine(comm);
+            dialogueReturnTo = comm;
+        }
 
+    }
+
+    private string TrimForKeyword(string trimstr)
+    {
+        //Trim ', :, " etc off of keywords to parse into SpeakLine()
+        var bb = 0;
+        foreach(char m in trimstr)
+        {
+            if(m == ':' || m == ' ' || m == '"' || m == '\'')
+            {
+                bb++;
+            }
+        }
+        GD.Print("Returning, using kw:" + trimstr.Substring(bb));
+        return trimstr.Substring(bb);
     }
 
     private string FindNextKeyword(string comm, bool newBox)
@@ -357,18 +382,62 @@ public class UI : Sprite
         }
     }
 
+    private void CheckCommands(int c)
+    {
+        bool returnline = false;
+        for (int j = 1; j < 9; j++)
+        {
+           //Check up to 9 rows ahead for commands.
+            if (scrip[c + j].Contains("**"))
+            {
+                RunConvoAction(scrip[c + j]);
+                if(scrip[c+j].ToUpper().Contains("RETURN")){
+                    returnline = true;
+                }
+            }
+            else
+                break;
+        }
+        if(!returnline && newTopics.Count > 0)
+        {
+            dialogueReturnTo = "ROOT";
+        }
+    }
+
+    private void DialogueTreeReturn(string line)
+    {
+        GD.Print("Returning to " + line);
+        if(line.ToUpper() == "ROOT")
+        {
+            newTopics.Clear();
+            InitializeKeywords();
+        }
+        else
+        {
+            //TODO: 
+            //Here, search through lines to find the kw '$line'
+            //Then act like npc was just asked about that kw.
+            
+        }
+    }
+
     public void StartConversation()
     {
         HideMapSelector();
+        newTopics.Clear();
         //GLOBALS KEYWORDS: (firstmeet), (hail), name, job, bye
         //After the line of dialogue has been grabbed,
         //Check the NEXT line
         //and make sure it doesn't contain a **.
         //If it does, perform action.
+        //oocSelNo = 0;
+        //oocSel.Position = oocSelBasePos;
         g.inputMode = inputModes.convoListen;
         currentSpeaker = p.targets[mapSelNo] as npc;
         dialogueWin.Show();
+        oocSel.Show();
         InitializeKeywords();
+        dialogueReturnTo = "";
         bool npcfound = false;
         for (int c = 0; c < scrip.Length; c++)
         {
@@ -386,60 +455,50 @@ public class UI : Sprite
             {
                 if (!g.peopleMet.Contains(currentSpeaker.myName))
                 {
-                    if (scrip[c].to_lower().Contains("firstmeet"))
+                    if (scrip[c].to_lower().Contains("'firstmeet'"))
                     { //KEYWORD
                         dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':') + 1, scrip[c].Length - scrip[c].IndexOf(':') - 1);
-                        for (int j = 1; j < 9; j++)
-                        {
-                            //Check up to 9 rows ahead for commands.
-                            if (scrip[c + j].Contains("**"))
-                            {
-                                RunConvoAction(scrip[c + j]);
-                            }
-                            else
-                                break;
-                        }
+                        CheckCommands(c);
                         break;
                     }
                 }
                 else //AREADY MET PERSON CODE:
                 {
-                    if (scrip[c].to_lower().Contains("hail"))
+                    if (scrip[c].to_lower().Contains("'hail'"))
                     { //KEYWORD
                         dialogueTxt.Text = scrip[c].substr(scrip[c].IndexOf(':') + 1, scrip[c].Length - scrip[c].IndexOf(':') - 1);
-                        for (int j = 1; j < 9; j++)
-                        {
-                            //Check up to 9 rows ahead for commands.
-                            if (scrip[c + j].Contains("**"))
-                            {
-                                RunConvoAction(scrip[c + j]);
-                            }
-                            else
-                                break;
-                        }
+                        CheckCommands(c);
                         break;
                     }
                 }
             }
         }
-        oocMenu.Show();
-        //TODO: Make another < indicator for dialogue
-        var newoocselpos = new Vector2(160, 125);
-        oocSel.Position = newoocselpos;
+        
+        //TODO: Make another < indicator for dialogue, make this efficient(static)
+        MoveSelectorToDialogueWindow();
         //TODO:
         //add firstmeet to save
         //if any global keywords or switches are added, add to save
     }
 
+    private void MoveSelectorToDialogueWindow()
+    {
+        var newoocselpos = new Vector2(373, 280); //DialogueWin pos
+        var newrot = 90f;
+        oocSel.Position = newoocselpos;
+        oocSel.SetRotationDegrees(newrot);
+    }
+
     public void ConvoSel(string key)
     {
         var oocselpos = oocSel.Position;
+        var spacing = 38f;
         if (key == g.downButton)
         {
             if (oocSelNo < oocMaxSel)
             {
                 oocSelNo++;
-                oocselpos.y += 19f;
+                oocselpos.y += spacing;
             }
         }
         else if (key == g.upButton)
@@ -447,22 +506,72 @@ public class UI : Sprite
             if (oocSelNo > 0)
             {
                 oocSelNo--;
-                oocselpos.y -= 19f;
+                oocselpos.y -= spacing;
             }
         }
         else if (key == g.aButton) //Selected keyword.
         {
             if(newTopics.Count == 0){
                 if(g.currentVisibleKeywords.Count == oocSelNo){
+                    
                     GD.Print("Selected keyword: 'Bye'");
+                    SpeakLine("BYE"); //Single quotes around keywords!
+                    g.inputMode = inputModes.convoEnding;
+                    oocMenu.Hide();
+                    MoveSelectorToDialogueWindow();
                 }
-                else
+                else{
                     GD.Print("Selected keyword:" + g.currentVisibleKeywords[oocSelNo]);
+                    SpeakLine(g.currentVisibleKeywords[oocSelNo]);
+                }
             }
-            else
-                GD.Print("Selected keyword:" + newTopics[oocSelNo]);
+            else{
+                GD.Print("Selected NEW keyword:" + newTopics[oocSelNo]);
+                SpeakLine(newTopics[oocSelNo]);
+                DialogueTreeReturn("ROOT");
+            }
         }
         oocSel.SetPosition(oocselpos);
+    }
+
+    private void SpeakLine(string line)
+    {
+        //TODO: Add a "is this line too big?" check, and pagination.
+
+        //TODO: Fix this loop for COUNTER based on dboffset
+        for(int a = dbOffset; a < scrip.Length; a++) //99 is max lines for 1 npc atm.
+        {
+            if(scrip[a].ToUpper().Contains("'"+line.ToUpper()+"'"))
+            {
+                GD.Print("What's that? You asked about: " + line);
+                GD.Print(scrip[a]);
+                int aa = 0;
+                string subs = scrip[a].Substring(scrip[a].IndexOf(':'));
+                foreach(char n in subs){
+                    if(n == ' ' || n == ':')
+                    {
+                        aa++;
+                    }
+                    else
+                        break;
+                }
+                
+                dialogueTxt.Text = subs.Substring(aa);
+                CheckCommands(a);
+                return;
+            }
+        }
+        //Getting this far means it was not found.
+       SpeakLine("ELSE");
+    }
+
+    public void EndConvo()
+    {
+        dialogueWin.Hide();
+        g.inputMode = inputModes.moving;
+        oocSel.Hide();
+        //oocMaxSel = 0;
+        //oocSelNo = 0;
     }
 
     private void AddKeywordsToMenu()
@@ -516,13 +625,18 @@ public class UI : Sprite
     {
         //FIRST, CHECK TO SEE IF HTE LINE IS DONE.
         //TODO: Add check for extra long strings.
-
+        if(!oocMenu.Visible)
+            oocMenu.Show();
         //if line is done and ready to ask question:
         //Also, add any keywords NOW to visible list that may be new.
         //OR: change to new tree.
         if(newTopics.Count == 0)
             AddKeywordsToMenu();
+        
+        //oocSel = 0;
+        //TODO:Fix the selection numbering here
         oocSel.Position = oocSelBasePos;
+        oocSel.SetRotationDegrees(0f);
         g.inputMode = inputModes.convoSpeak;
         
     }

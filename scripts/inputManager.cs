@@ -144,6 +144,11 @@ public class inputManager : Node
                 gui.ConvoSel(key);
             }
         }
+        else if(g.inputMode == inputModes.convoEnding)
+        {
+            if(key == g.aButton || key == g.bButton)
+                gui.EndConvo();
+        }
     }
 
     void FirstDepress(string key)

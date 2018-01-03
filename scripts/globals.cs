@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public enum inputModes { noInput, moving, combatMove, combatCommand, oocMenuRoot, selectToTalk, convoListen, convoSpeak }
+public enum inputModes { noInput, moving, combatMove, combatCommand, oocMenuRoot, selectToTalk, convoListen, convoSpeak, convoEnding }
 public enum battlePositions { standard, reversed, rtl, ltr, hasami, ambushed }
 public enum actors { player, enemy }
 
