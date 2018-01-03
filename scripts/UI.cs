@@ -13,17 +13,18 @@ public class UI : Sprite
     int fadeLoop = 0, oocSelNo, mapSelNo;
     int rectSize = 92;
     bool[,] fadeRects = new bool[22, 22];
-    Vector2 upLeft, bsqPos;
+    Vector2 upLeft, bsqPos,
+        oocSelBasePos = new Vector2(-203,-115);
     public npc collidingWith;
     player p;
     globals g;
     Sprite combatUI, combatSel, oocMenu, oocSel, dialogueWin, mapSel;
     combatOps c;
     Label statLbl, menuLbl, feedbackLbl, oocTxt, dialogueTxt;
-    private int combatSelNo;
+    private int combatSelNo, oocMaxSel, dbOffset;
     npc currentSpeaker;
-    string[] scrip;//
-    private int oocMaxSel;
+    string[] scrip;
+    private List<string> newTopics = new List<string>();
 
     public override void _Draw()
     {
@@ -72,6 +73,7 @@ public class UI : Sprite
         oocMenu.Show();
         oocSel.Show();
         oocSelNo = 0;
+
         var cam = p.FindNode("Camera2D") as Camera2D;
         SetPosition(cam.GetCameraPosition());
         oocSel.SetPosition(new Vector2(oocSel.Position.x, -115f));
@@ -89,6 +91,7 @@ public class UI : Sprite
         //SET MY POSITION TO BATTLEMAP
         var gpos = GetNode("../battlemap/gui_combat_pos") as Node2D;
         SetPosition(gpos.GetGlobalPosition());
+
         cam.Current = false;
         Camera2D battleCam = GetNode("combatUI/battleCam") as Camera2D;
         battleCam.Current = true;
@@ -266,20 +269,33 @@ public class UI : Sprite
 
     private void RunConvoAction(string command)
     {
+        newTopics.Clear();
         //string comm = command.Substring(2);
         if (command.ToUpper().Contains("**NEW"))
+        {
+            //g.currentVisibleKeywords.Clear();
+            string comm = command.substr(command.IndexOf(':'), (command.Length - command.IndexOf(':')));
+            do
+            {
+                comm = FindNextKeyword(comm, true);
+            }
+            while (comm.Length > 1);
+            NewConvoTree(newTopics);
+        }
+        else if(command.ToUpper().Contains("**ADD"))
         {
             string comm = command.substr(command.IndexOf(':'), (command.Length - command.IndexOf(':')));
             do
             {
-                comm = FindNextKeyword(comm);
+                comm = FindNextKeyword(comm, false);
+                //AddKeyword();
             }
-            while (comm.Length > 2);
+            while (comm.Length > 1);
         }
 
     }
 
-    private string FindNextKeyword(string comm)
+    private string FindNextKeyword(string comm, bool newBox)
     {
         int aa = 0;
         int bb = 0;
@@ -299,8 +315,12 @@ public class UI : Sprite
                 else
                     aa++;
             }
-
-            g.currentVisibleKeywords.Add(comm.substr(aa, bb));
+            if(newBox == false)
+                //AddKeywordToMenu(comm.substr(aa, bb));
+                g.currentVisibleKeywords.Add(comm.substr(aa, bb));
+            else
+                newTopics.Add(comm.substr(aa, bb));
+            
             GD.Print(comm.substr(aa, bb) + " added to new keywords");
             comm = comm.Substring(aa + bb + 1);
         }
@@ -309,14 +329,32 @@ public class UI : Sprite
             aa = 0;
             foreach (char b in comm)
             {
-                if (b == ',' || b == ' ')
+                if (b == ',' || b == ' ' || b == ':')
                     aa++;
             }
-            g.currentVisibleKeywords.Add(comm.Substring(aa));
+            if(newBox == false)
+                g.currentVisibleKeywords.Add(comm.Substring(aa));
+            else
+                newTopics.Add(comm.Substring(aa));
+            
             GD.Print(comm.Substring(aa) + " added to new keywords");
             comm = "";
         }
+        
         return comm;
+    }
+
+    private void NewConvoTree(List<string> topics)
+    {
+        oocTxt.Text = "";
+        oocMaxSel = -1;
+        oocSelNo = 0;
+        oocSel.Position = oocSelBasePos;
+        foreach(string c in topics){
+            var c2 = c.substr(0,1).ToUpper();
+            oocTxt.Text += c2 + c.Substring(1) + "\n";
+            oocMaxSel++;
+        }
     }
 
     public void StartConversation()
@@ -330,7 +368,7 @@ public class UI : Sprite
         g.inputMode = inputModes.convoListen;
         currentSpeaker = p.targets[mapSelNo] as npc;
         dialogueWin.Show();
-        PopKeywords();
+        InitializeKeywords();
         bool npcfound = false;
         for (int c = 0; c < scrip.Length; c++)
         {
@@ -340,6 +378,7 @@ public class UI : Sprite
                 if (npcname == currentSpeaker.myName)
                 {
                     npcfound = true;
+                    dbOffset = c;
                     GD.Print("speaker dialogue found.");
                 }
             }
@@ -411,11 +450,35 @@ public class UI : Sprite
                 oocselpos.y -= 19f;
             }
         }
+        else if (key == g.aButton) //Selected keyword.
+        {
+            if(newTopics.Count == 0){
+                if(g.currentVisibleKeywords.Count == oocSelNo){
+                    GD.Print("Selected keyword: 'Bye'");
+                }
+                else
+                    GD.Print("Selected keyword:" + g.currentVisibleKeywords[oocSelNo]);
+            }
+            else
+                GD.Print("Selected keyword:" + newTopics[oocSelNo]);
+        }
         oocSel.SetPosition(oocselpos);
     }
 
-    private void PopKeywords()
+    private void AddKeywordsToMenu()
     {
+        oocMaxSel++;
+        oocTxt.Text = "";
+        foreach(string n in g.currentVisibleKeywords){
+            var n2 = n.substr(0, 1).ToUpper() + n.Substring(1);
+            oocTxt.Text += n2 + "\n";
+        }
+        oocTxt.Text += "Bye";
+    }
+
+    private void InitializeKeywords()
+    {
+        g.currentVisibleKeywords.Clear();
         oocMaxSel = 0;
         oocTxt.Text = "";
         foreach (string n in g.globalKeywords)
@@ -423,25 +486,28 @@ public class UI : Sprite
             var n2 = n.substr(0, 1).ToUpper() + n.Substring(1);
             oocTxt.Text += n2 + "\n";
             oocMaxSel++;
+            g.currentVisibleKeywords.Add(n);
         }
         if (g.privvyKeywords.ContainsKey(currentSpeaker.myName))
         {
             //TODO:Second-hand knowledge of this person is known, 
             //and the relevant keyword should be added automatically.
             //And maxsel inc.
+            //g.currentVisibleKeywords.Add(g.privvyKeywords[currentSpeaker.myName]);
         }
-        if (g.currentVisibleKeywords.Count != 0)
-        {
-            //current speaker's non-privvy, non-global keywords.
-            foreach (string m in g.currentVisibleKeywords)
-            {
-                var m2 = m.substr(0, 1).ToUpper() + m.Substring(1);
-                oocTxt.Text += m2 + "\n";
-                oocMaxSel++;
-            }
-        }
-
+        //if (g.currentVisibleKeywords.Count != 0)
+        //{
+        //current speaker's non-privvy, non-global keywords.
+        //    foreach (string m in g.currentVisibleKeywords)
+        //    {
+        //        var m2 = m.substr(0, 1).ToUpper() + m.Substring(1);
+        //        oocTxt.Text += m2 + "\n";
+        //        oocMaxSel++;
+        //    }
+        //}
+        //g.currentVisibleKeywords.Add("Bye");
         oocTxt.Text += "Bye";
+        //oocMaxSel++;
         //oocMaxSel++; < not needed since it starts at 0
         //TODO: Add support for scrolling.
     }
@@ -454,11 +520,11 @@ public class UI : Sprite
         //if line is done and ready to ask question:
         //Also, add any keywords NOW to visible list that may be new.
         //OR: change to new tree.
-        PopKeywords();
-        var oldoocselpos = new Vector2(-203, -115);
-        oocSel.Position = oldoocselpos;
+        if(newTopics.Count == 0)
+            AddKeywordsToMenu();
+        oocSel.Position = oocSelBasePos;
         g.inputMode = inputModes.convoSpeak;
-
+        
     }
 
     public void SelectNextOnMap(bool backwards)
